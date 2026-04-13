@@ -1,0 +1,5 @@
+app.py
+chart.umd.min.js
+.claude/
+__pycache__/
+*.pyc

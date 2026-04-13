@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Investment Calculator · Lima Retail</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sidebar-bg: #1A2035;
+    --bg:         #F2F5FA;
+    --card:       #FFFFFF;
+    --border:     #E2E8F0;
+    --brand:      #E8403C;
+    --brand-2:    #FF6B5B;
+    --teal:       #00C49A;
+    --orange:     #F57C28;
+    --blue:       #1A73E8;
+    --violet:     #1A73E8;
+    --red:        #DC2626;
+    --text:       #0F172A;
+    --text-2:     #475569;
+    --muted:      #94A3B8;
+    --font:       'Proxima Nova','Nunito','Segoe UI',system-ui,sans-serif;
+    --r:          13px;
+    --sh:         0 1px 3px rgba(15,23,42,.06),0 4px 14px rgba(15,23,42,.06);
+    --sh2:        0 4px 14px rgba(15,23,42,.12),0 8px 30px rgba(15,23,42,.09);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px}
+  .layout{display:flex;min-height:100vh}
+
+  /* ══ Sidebar ═══════════════════════════════════════════ */
+  .sidebar{width:280px;min-width:280px;background:var(--sidebar-bg);display:flex;flex-direction:column;box-shadow:2px 0 16px rgba(0,0,0,.14);overflow-y:auto}
+  .s-brand{padding:22px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+  .s-logo{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;color:#fff}
+  .s-icon{width:36px;height:36px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center}
+  .s-sub{font-size:12px;color:#7A8FA6;margin-top:3px;padding-left:46px}
+  .s-gtitle{padding:16px 20px 5px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(168,181,204,.4)}
+  .s-body{padding:4px 14px 28px;display:flex;flex-direction:column;gap:3px}
+  .fw{padding:9px 6px;border-radius:8px}
+  .fl{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#7A8FA6;margin-bottom:5px}
+  .fl-hint{font-size:11px;color:#4A5F7A;font-weight:500;text-transform:none;letter-spacing:0;display:block;margin-bottom:7px;line-height:1.45}
+  .fi{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 13px;color:#fff;font-size:15px;font-weight:700;font-family:var(--font);outline:none;transition:border-color .2s,background .2s}
+  .fi:focus{border-color:var(--brand);background:rgba(232,64,60,.08)}
+  .fi-wrap{position:relative}
+  .fi-pre{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--brand);font-weight:800;font-size:13px;pointer-events:none}
+  .fi-wrap .fi{padding-left:30px}
+  .sl-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+  .sl-val{font-size:28px;font-weight:900;color:#fff;line-height:1}
+  .sl-unit{font-size:12px;color:#7A8FA6}
+  input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.12);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--brand);border:2px solid var(--sidebar-bg);box-shadow:0 0 0 3px rgba(232,64,60,.2)}
+  .presets{display:flex;gap:5px;margin-top:8px}
+  .pb{flex:1;padding:7px 2px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:7px;color:#7A8FA6;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s}
+  .pb:hover,.pb.on{background:rgba(232,64,60,.15);border-color:var(--brand);color:var(--brand)}
+  .s-div{border:none;border-top:1px solid rgba(255,255,255,.07);margin:5px 6px}
+
+  /* ══ Main ═══════════════════════════════════════════════ */
+  .main{flex:1;padding:26px 30px;overflow-y:auto;display:flex;flex-direction:column;gap:24px}
+  .hdr{display:flex;justify-content:space-between;align-items:flex-start}
+  .hdr-ey{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin-bottom:3px}
+  .hdr-t{font-size:26px;font-weight:900;color:var(--text);letter-spacing:-.02em}
+  .hdr-s{font-size:14px;color:var(--text-2);margin-top:3px}
+  .hdr-ts{font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 14px;box-shadow:var(--sh);white-space:nowrap;margin-top:4px}
+  .sec-lbl{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:16px}
+
+  /* ══ SVG icons ══════════════════════════════════════════ */
+  .ic{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:7px;margin-bottom:10px;flex-shrink:0}
+  .ic svg{width:16px;height:16px;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .ic-brand  {background:rgba(232,64,60,.1)} .ic-brand svg  {stroke:var(--brand)}
+  .ic-slate  {background:rgba(15,23,42,.07)}  .ic-slate svg  {stroke:#475569}
+  .ic-teal   {background:rgba(0,196,154,.1)}  .ic-teal svg   {stroke:var(--teal)}
+  .ic-violet {background:rgba(124,58,237,.1)} .ic-violet svg {stroke:var(--violet)}
+  .ic-orange {background:rgba(245,124,40,.1)} .ic-orange svg {stroke:var(--orange)}
+  .ic-gold   {background:rgba(217,119,6,.1)}  .ic-gold svg   {stroke:#D97706}
+
+  /* ══ Funnel ══════════════════════════════════════════════ */
+  .funnel{display:flex;flex-direction:column;gap:11px}
+  .funnel-row{display:flex;align-items:stretch;gap:0}
+  .funnel-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 16px;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+  .funnel-card:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+  .funnel-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .fc-brand::before  {background:linear-gradient(90deg,var(--brand),var(--brand-2))}
+  .fc-slate::before  {background:var(--border)}
+  .fc-teal::before   {background:linear-gradient(90deg,var(--teal),#00e6b8)}
+  .fc-violet::before {background:linear-gradient(90deg,var(--violet),#a855f7)}
+  .fc-orange::before {background:linear-gradient(90deg,var(--orange),#ffb347)}
+  .fc-gold::before   {background:linear-gradient(90deg,#D97706,#F59E0B)}
+  .fc-label{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .fc-value{font-size:32px;font-weight:900;color:var(--text);line-height:1;letter-spacing:-.02em;margin-bottom:6px}
+  .fc-value.brand  {color:var(--brand)}
+  .fc-value.teal   {color:var(--teal)}
+  .fc-value.violet {color:var(--violet)}
+  .fc-value.orange {color:var(--orange)}
+  .fc-value.gold   {color:#D97706}
+  .fc-ratio{display:inline-flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-size:11px;font-weight:700;color:var(--text-2);margin-bottom:7px;width:fit-content}
+  .fc-desc{font-size:13px;color:var(--text-2);line-height:1.55;flex:1}
+  .funnel-arrow{display:flex;align-items:center;padding:0 7px;color:var(--muted);font-size:18px;flex-shrink:0;align-self:center}
+
+  /* ══ Simulation ══════════════════════════════════════════ */
+  .sim-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+  .sim-header{padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(232,64,60,.03),rgba(26,115,232,.03))}
+  .sim-title-row{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .sim-title{font-size:15px;font-weight:800;color:var(--text)}
+  .sim-subtitle{font-size:13px;color:var(--text-2);margin-top:4px;line-height:1.5}
+  .sim-highlight{display:inline-flex;align-items:center;gap:6px;background:rgba(15,23,42,.05);color:var(--muted);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:700;margin-left:8px}
+  .var-inputs{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+  .var-group{display:flex;align-items:center;gap:6px}
+  .var-label{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .var-input{width:60px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-family:var(--font);font-size:13px;font-weight:700;color:var(--text);outline:none;text-align:center;transition:border-color .2s}
+  .var-input.up:focus{border-color:var(--brand)}
+  .var-input.dn:focus{border-color:var(--orange)}
+  .var-pct{font-size:13px;font-weight:700;color:var(--muted)}
+
+  /* scenario columns */
+  .sc-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+  .sc-col{padding:20px 20px 22px;border-right:1px solid var(--border);position:relative}
+  .sc-col:last-child{border-right:none}
+  .sc-col.is-base{background:rgba(26,115,232,.025)}
+  .sc-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:20px;margin-bottom:12px}
+  .sc-badge.base{background:rgba(26,115,232,.1);color:var(--blue)}
+  .sc-badge.up  {background:rgba(232,64,60,.1);color:var(--brand)}
+  .sc-badge.dn  {background:rgba(245,124,40,.12);color:var(--orange)}
+  .sc-ratio-lbl{font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
+
+  /* editable ratio inside scenario col */
+  .sc-ratio-input-wrap{display:flex;align-items:baseline;gap:6px;margin-bottom:14px}
+  .sc-ratio-input{
+    width:72px;border:2px solid var(--border);border-radius:8px;
+    padding:6px 10px;font-family:var(--font);font-size:26px;font-weight:900;
+    color:var(--text);background:var(--bg);outline:none;text-align:center;
+    transition:border-color .2s,background .2s;letter-spacing:-.02em;
+  }
+  .sc-ratio-input:focus{background:#fff;box-shadow:0 0 0 3px rgba(26,115,232,.12)}
+  .sc-col.is-base .sc-ratio-input:focus{border-color:var(--blue)}
+  .sc-col:nth-child(2) .sc-ratio-input:focus{border-color:var(--brand)}
+  .sc-col:nth-child(3) .sc-ratio-input:focus{border-color:var(--orange)}
+  .sc-pct-lbl{font-size:22px;font-weight:800;color:var(--muted)}
+
+  .sc-rows{display:flex;flex-direction:column;gap:7px}
+  .sc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg);border-radius:8px}
+  .sc-row-lbl{font-size:13px;color:var(--text-2);font-weight:600}
+  .sc-row-val{font-size:15px;font-weight:800;color:var(--text)}
+  .sc-row-val.blue  {color:var(--blue)}
+  .sc-row-val.brand {color:var(--brand)}
+  .sc-row-val.orange{color:var(--orange)}
+  .sc-delta{font-size:11px;font-weight:700;margin-top:10px;padding:4px 10px;border-radius:10px;text-align:center}
+  .sc-delta.up{background:rgba(232,64,60,.08);color:var(--brand)}
+  .sc-delta.dn{background:rgba(245,124,40,.1);color:var(--orange)}
+
+  /* ══ Table ═══════════════════════════════════════════════ */
+  .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+  .tbl-toggle{width:100%;padding:14px 18px;background:none;border:none;border-bottom:1px solid transparent;color:var(--text);font-family:var(--font);font-size:14px;font-weight:700;text-align:left;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .15s}
+  .tbl-toggle:hover{background:rgba(15,23,42,.025)}
+  .tbl-toggle.open{border-bottom-color:var(--border)}
+  .tbl-body{display:none;overflow-x:auto}
+  .tbl-body.open{display:block}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:#F8FAFB;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:10px 14px;text-align:right;border-bottom:1px solid var(--border)}
+  th:first-child{text-align:center;width:50px}
+  td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--border);color:var(--text);font-weight:500}
+  td:first-child{text-align:center;color:var(--muted);font-weight:700}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(232,64,60,.03)}
+  .tb{color:var(--brand);font-weight:700}
+
+  /* ══ Export ══════════════════════════════════════════════ */
+  .exp-row{display:flex;align-items:center;gap:14px}
+  .btn-exp{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border:none;border-radius:9px;padding:11px 24px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(232,64,60,.3);transition:opacity .2s;display:flex;align-items:center;gap:8px}
+  .btn-exp:hover{opacity:.88}
+  .exp-note{font-size:13px;color:var(--muted)}
+
+  @media(max-width:900px){.funnel-arrow{display:none}.funnel-row{flex-wrap:wrap}.sc-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ══ Sidebar ═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="s-brand">
+    <div class="s-logo">
+      <div class="s-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      </div>
+      Lima Retail
+    </div>
+    <div class="s-sub">Investment Calculator</div>
+  </div>
+
+  <div class="s-gtitle">Parámetros de inversión</div>
+  <div class="s-body">
+    <div class="fw">
+      <label class="fl" for="investment">Inversión Total (PEN)</label>
+      <div class="fi-wrap"><span class="fi-pre">S/</span>
+        <input id="investment" class="fi" type="number" value="800" min="0" step="100"/>
+      </div>
+    </div>
+    <div class="fw">
+      <label class="fl">Costo por Conversación (CPL)</label>
+      <span class="fl-hint">¿Cuánto pagas por cada persona que te escribe?</span>
+      <div class="fi-wrap"><span class="fi-pre">S/</span>
+        <input id="cpl" class="fi" type="number" value="3" min="0.01" step="0.5"/>
+      </div>
+      <div class="presets">
+        <button class="pb on" onclick="setCPL(3)">S/3</button>
+        <button class="pb" onclick="setCPL(5)">S/5</button>
+        <button class="pb" onclick="setCPL(10)">S/10</button>
+      </div>
+    </div>
+    <hr class="s-div"/>
+    <div class="s-gtitle" style="padding:10px 6px 5px">Ratios de conversión</div>
+    <div class="fw">
+      <label class="fl">% Leads → Conversaciones Reales</label>
+      <span class="fl-hint">¿Qué % de tus leads genera una conversación real?</span>
+      <div class="fi-wrap"><span class="fi-pre" style="color:#94A3B8">%</span>
+        <input id="r-real" class="fi" type="number" value="80" min="1" max="100" step="1"/>
+      </div>
+    </div>
+    <div class="fw">
+      <label class="fl">% Conversaciones → Posibles Clientes</label>
+      <span class="fl-hint">¿Cuántas conversaciones muestran intención real de compra?</span>
+      <div class="fi-wrap"><span class="fi-pre" style="color:#94A3B8">%</span>
+        <input id="r-prospect" class="fi" type="number" value="40" min="1" max="100" step="1"/>
+      </div>
+    </div>
+    <div class="fw">
+      <label class="fl">% Ratio de Cierre (Ventas)</label>
+      <span class="fl-hint">¿Qué % de posibles clientes concreta la compra?</span>
+      <div class="fi-wrap"><span class="fi-pre" style="color:#94A3B8">%</span>
+        <input id="r-close" class="fi" type="number" value="30" min="1" max="100" step="1"/>
+      </div>
+    </div>
+    <hr class="s-div"/>
+    <div class="fw">
+      <label class="fl">Ticket Promedio (PEN)</label>
+      <span class="fl-hint">Valor promedio de cada venta cerrada</span>
+      <div class="fi-wrap"><span class="fi-pre">S/</span>
+        <input id="ticket" class="fi" type="number" value="157.42" min="1" step="5"/>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══ Main ════════════════════════════════════════════════════ -->
+<main class="main">
+
+  <div class="hdr">
+    <div>
+      <div class="hdr-ey">Agencia Lima Retail</div>
+      <div class="hdr-t">Investment Calculator</div>
+      <div class="hdr-s">Proyección de embudo · WhatsApp &amp; Conversaciones pagas</div>
+    </div>
+    <div class="hdr-ts" id="last-update"></div>
+  </div>
+
+  <!-- Funnel -->
+  <div>
+    <div class="sec-lbl">Embudo de conversión — de la inversión a la facturación</div>
+    <div class="funnel">
+      <div class="funnel-row">
+
+        <div class="funnel-card fc-brand">
+          <div class="ic ic-brand">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          </div>
+          <div class="fc-label">Inversión Total</div>
+          <div class="fc-value brand" id="k-inv">S/800</div>
+          <div class="fc-desc">Presupuesto total asignado a tu campaña. Es el punto de partida de toda la proyección.</div>
+        </div>
+
+        <div class="funnel-arrow">→</div>
+
+        <div class="funnel-card fc-slate">
+          <div class="ic ic-slate">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="fc-label">Total Leads</div>
+          <div class="fc-value" id="k-leads">267</div>
+          <div class="fc-ratio" id="k-leads-ratio">CPL S/3.00</div>
+          <div class="fc-desc">Contactos que generará tu inversión. Se obtiene dividiendo el presupuesto entre el costo por conversación (CPL).</div>
+        </div>
+
+        <div class="funnel-arrow">→</div>
+
+        <div class="funnel-card fc-slate">
+          <div class="ic ic-slate">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="fc-label">Leads Reales (Conversaciones)</div>
+          <div class="fc-value" id="k-real">213</div>
+          <div class="fc-ratio" id="k-real-ratio">80% de leads</div>
+          <div class="fc-desc">Conversaciones genuinas estimadas. Solo una parte de tus leads responde activamente e inicia un diálogo real con tu equipo.</div>
+        </div>
+
+        <div class="funnel-arrow">→</div>
+
+        <div class="funnel-card fc-slate">
+          <div class="ic ic-slate">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div class="fc-label">Posibles Clientes</div>
+          <div class="fc-value" id="k-prospect">85</div>
+          <div class="fc-ratio" id="k-prospect-ratio">40% de conversaciones</div>
+          <div class="fc-desc">Prospectos con intención real de compra. Son quienes, tras conversar con tu equipo, muestran interés genuino en tu producto.</div>
+        </div>
+
+      </div>
+
+      <div class="funnel-row">
+
+        <div class="funnel-card fc-slate" style="flex:none;width:calc(25% - 18px)">
+          <div class="ic ic-slate">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="fc-label">Ventas Cerradas</div>
+          <div class="fc-value" id="k-sales">26</div>
+          <div class="fc-ratio" id="k-sales-ratio">30% de posibles clientes</div>
+          <div class="fc-desc">Clientes que completaron la compra. Se aplica tu ratio de cierre sobre los posibles clientes del embudo.</div>
+        </div>
+
+        <div class="funnel-arrow">→</div>
+
+        <div class="funnel-card fc-slate" style="flex:none;width:calc(25% - 18px)">
+          <div class="ic ic-slate">
+            <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          </div>
+          <div class="fc-label">Ticket Promedio</div>
+          <div class="fc-value" id="k-ticket">S/157.42</div>
+          <div class="fc-desc">Valor promedio de cada venta cerrada. Es el ingreso que genera cada cliente que concreta su compra.</div>
+        </div>
+
+        <div class="funnel-arrow">→</div>
+
+        <div class="funnel-card fc-brand" style="flex:none;width:calc(50% - 15px)">
+          <div class="ic ic-brand">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="fc-label">Facturación Estimada</div>
+          <div class="fc-value brand" id="k-revenue">S/4,030</div>
+          <div class="fc-ratio" id="k-roi-badge" style="color:var(--brand)">ROI ▲ —%</div>
+          <div class="fc-desc">Ingresos totales proyectados. Resulta de multiplicar las ventas cerradas por el ticket promedio. El ROI compara estos ingresos con tu inversión inicial.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulation -->
+  <div>
+    <div class="sec-lbl">Simulación de escenarios</div>
+    <div class="sim-block">
+      <div class="sim-header">
+        <div class="sim-title-row">
+          <div>
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:5px">
+              <div class="sim-title">Impacto de la Gestión de Leads → Posibles Clientes</div>
+              <div class="sim-highlight">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                Variable clave del embudo
+              </div>
+            </div>
+            <div class="sim-subtitle">Edita el % de conversión en cada columna y explora cómo impacta en tu facturación. La variación de los escenarios ±% se aplica automáticamente pero puedes ajustarla.</div>
+          </div>
+          <div class="var-inputs">
+            <div class="var-group">
+              <span class="var-label">▲ Variación alta</span>
+              <input id="var-up" class="var-input up" type="number" value="10" min="1" max="99" step="1"/>
+              <span class="var-pct">%</span>
+            </div>
+            <div class="var-group">
+              <span class="var-label">▼ Variación baja</span>
+              <input id="var-dn" class="var-input dn" type="number" value="10" min="1" max="99" step="1"/>
+              <span class="var-pct">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sc-grid">
+
+        <!-- Actual -->
+        <div class="sc-col is-base">
+          <div class="sc-badge base">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+            Escenario Actual
+          </div>
+          <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
+          <div class="sc-ratio-input-wrap">
+            <input id="sc-mid-input" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="40" style="border-color:var(--blue);color:var(--blue)"/>
+            <span class="sc-pct-lbl" style="color:var(--blue)">%</span>
+          </div>
+          <div class="sc-rows">
+            <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val blue" id="sc-mid-real">—</span></div>
+            <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val blue" id="sc-mid-pc">—</span></div>
+          </div>
+          <div class="sc-ratio-lbl" style="margin-top:10px;">Ratio de Cierre</div>
+          <div class="sc-ratio-input-wrap">
+            <input id="sc-mid-close" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="30" style="border-color:var(--blue);color:var(--blue)"/>
+            <span class="sc-pct-lbl" style="color:var(--blue)">%</span>
+          </div>
+          <div class="sc-rows">
+            <div class="sc-row"><span class="sc-row-lbl">Ventas Cerradas</span><span class="sc-row-val blue" id="sc-mid-v">—</span></div>
+            <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val blue" id="sc-mid-f">—</span></div>
+          </div>
+        </div>
+
+        <!-- +X% -->
+        <div class="sc-col">
+          <div class="sc-badge up" id="sc-up-badge">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            +10% Conversión
+          </div>
+          <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
+          <div class="sc-ratio-input-wrap">
+            <input id="sc-high-input" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="44" style="border-color:var(--brand);color:var(--brand)"/>
+            <span class="sc-pct-lbl" style="color:var(--brand)">%</span>
+          </div>
+          <div class="sc-rows">
+            <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val brand" id="sc-high-real">—</span></div>
+            <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val brand" id="sc-high-pc">—</span></div>
+          </div>
+          <div class="sc-ratio-lbl" style="margin-top:10px;">Ratio de Cierre</div>
+          <div class="sc-ratio-input-wrap">
+            <input id="sc-high-close" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="30" style="border-color:var(--brand);color:var(--brand)"/>
+            <span class="sc-pct-lbl" style="color:var(--brand)">%</span>
+          </div>
+          <div class="sc-rows">
+            <div class="sc-row"><span class="sc-row-lbl">Ventas Cerradas</span><span class="sc-row-val brand" id="sc-high-v">—</span></div>
+            <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val brand" id="sc-high-f">—</span></div>
+          </div>
+          <div class="sc-delta up" id="sc-high-delta">—</div>
+        </div>
+
+        <!-- -X% -->
+        <div class="sc-col">
+          <div class="sc-badge dn" id="sc-dn-badge">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            −10% Conversión
+          </div>
+          <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
+          <div class="sc-ratio-input-wrap">
+            <input id="sc-low-input" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="36" style="border-color:var(--orange);color:var(--orange)"/>
+            <span class="sc-pct-lbl" style="color:var(--orange)">%</span>
+          </div>
+          <div class="sc-rows">
+            <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val orange" id="sc-low-real">—</span></div>
+            <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val orange" id="sc-low-pc">—</span></div>
+          </div>
+          <div class="sc-ratio-lbl" style="margin-top:10px;">Ratio de Cierre</div>
+          <div class="sc-ratio-input-wrap">
+            <input id="sc-low-close" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="30" style="border-color:var(--orange);color:var(--orange)"/>
+            <span class="sc-pct-lbl" style="color:var(--orange)">%</span>
+          </div>
+          <div class="sc-rows">
+            <div class="sc-row"><span class="sc-row-lbl">Ventas Cerradas</span><span class="sc-row-val orange" id="sc-low-v">—</span></div>
+            <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val orange" id="sc-low-f">—</span></div>
+          </div>
+          <div class="sc-delta dn" id="sc-low-delta">—</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Export -->
+  <div>
+    <div class="sec-lbl">Exportar proyección</div>
+    <div class="exp-row">
+      <button class="btn-exp" onclick="exportCSV()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Descargar CSV
+      </button>
+      <span class="exp-note" id="exp-note">Proyección de 30 días · Generada hoy</span>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+const el = id => document.getElementById(id);
+const fN = (n,d=0) => n.toLocaleString('es-PE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fS = (n,d=0) => 'S/'+fN(n,d);
+
+function bellW(days){
+  const a=[],mid=days/2,std=days/5.5;
+  for(let i=1;i<=days;i++) a.push(Math.exp(-.5*Math.pow((i-mid)/std,2))*(0.6+0.4*i/days));
+  const s=a.reduce((x,y)=>x+y,0);
+  return a.map(v=>v/s);
+}
+
+function calcRow(inv,days,cpl,rReal,rProsp,rClose,ticket){
+  const leads     = cpl>0?inv/cpl:0;
+  const reales    = leads*(rReal/100);
+  const prospects = reales*(rProsp/100);
+  const ventas    = prospects*(rClose/100);
+  const revenue   = ventas*ticket;
+  const w         = bellW(days);
+  const rows=[];let cRev=0;
+  for(let d=0;d<days;d++){
+    const dL=leads*w[d],dRe=dL*(rReal/100),dPr=dRe*(rProsp/100),dV=dPr*(rClose/100),dRev=dV*ticket;
+    cRev+=dRev;
+    rows.push({day:d+1,leads:dL,reales:dRe,prospects:dPr,ventas:dV,revenue:dRev,cumRev:cRev});
+  }
+  return{leads,reales,prospects,ventas,revenue,rows};
+}
+
+function calcScenario(inv,days,cpl,rReal,rProsp,rClose,ticket){
+  const leads     = cpl>0?inv/cpl:0;
+  const reales    = leads*(rReal/100);
+  const prospects = reales*(rProsp/100);
+  const ventas    = prospects*(rClose/100);
+  const revenue   = ventas*ticket;
+  return{reales,prospects,ventas,revenue};
+}
+
+let cur=null;
+// Track if scenario inputs were manually edited
+let scManual={mid:false,high:false,low:false};
+let scCloseManual={mid:false,high:false,low:false};
+
+function setCPL(v){
+  el('cpl').value=v;
+  document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('on',parseFloat(b.textContent.replace('S/',''))===parseFloat(v)));
+  scManual={mid:false,high:false,low:false};
+  scCloseManual={mid:false,high:false,low:false};
+  render();
+}
+
+function render(){
+  const inv    = parseFloat(el('investment').value)||0;
+  const days   = 30;
+  const cpl    = parseFloat(el('cpl').value)||3;
+  const rReal  = parseFloat(el('r-real').value)||80;
+  const rProsp = parseFloat(el('r-prospect').value)||40;
+  const rClose = parseFloat(el('r-close').value)||30;
+  const ticket = parseFloat(el('ticket').value)||157.42;
+  const varUp  = parseFloat(el('var-up').value)||10;
+  const varDn  = parseFloat(el('var-dn').value)||10;
+  const d = calcRow(inv,days,cpl,rReal,rProsp,rClose,ticket);
+  cur={d,inv,days,cpl,rReal,rProsp,rClose,ticket,varUp,varDn};
+
+  const roi=inv>0?(d.revenue-inv)/inv*100:0;
+  el('k-inv').textContent         = fS(inv);
+  el('k-leads').textContent       = fN(d.leads);
+  el('k-leads-ratio').textContent = `CPL ${fS(cpl,2)}`;
+  el('k-real').textContent        = fN(d.reales);
+  el('k-real-ratio').textContent  = `${rReal}% de leads`;
+  el('k-prospect').textContent    = fN(d.prospects);
+  el('k-prospect-ratio').textContent=`${rProsp}% de conversaciones`;
+  el('k-sales').textContent       = fN(d.ventas);
+  el('k-sales-ratio').textContent = `${rClose}% de posibles clientes`;
+  el('k-ticket').textContent      = fS(ticket,2);
+  el('k-revenue').textContent     = fS(d.revenue);
+  const roiEl=el('k-roi-badge');
+  roiEl.textContent=`ROI ${roi>=0?'▲':'▼'} ${Math.abs(roi).toFixed(1)}%`;
+  roiEl.style.color=roi>=0?'var(--brand)':'var(--red)';
+
+  // Update scenario inputs if not manually overridden
+  if(!scManual.mid)  el('sc-mid-input').value  = rProsp.toFixed(1);
+  if(!scManual.high) el('sc-high-input').value = (rProsp*(1+varUp/100)).toFixed(1);
+  if(!scManual.low)  el('sc-low-input').value  = Math.max(1,rProsp*(1-varDn/100)).toFixed(1);
+  if(!scCloseManual.mid)  el('sc-mid-close').value  = rClose.toFixed(1);
+  if(!scCloseManual.high) el('sc-high-close').value = rClose.toFixed(1);
+  if(!scCloseManual.low)  el('sc-low-close').value  = rClose.toFixed(1);
+
+  renderScenarios(inv,days,cpl,rReal,ticket);
+  el('exp-note').textContent=`Incluye ${days} días · ${d.rows.length} filas · Generado hoy`;
+
+  el('sc-up-badge').innerHTML=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg> +${varUp}% Conversión`;
+  el('sc-dn-badge').innerHTML=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg> −${varDn}% Conversión`;
+}
+
+function renderScenarios(inv,days,cpl,rReal,ticket){
+  const rMid      = parseFloat(el('sc-mid-input').value)||40;
+  const rHigh     = parseFloat(el('sc-high-input').value)||44;
+  const rLow      = parseFloat(el('sc-low-input').value)||36;
+  const rCloseMid  = parseFloat(el('sc-mid-close').value)||30;
+  const rCloseHigh = parseFloat(el('sc-high-close').value)||30;
+  const rCloseLow  = parseFloat(el('sc-low-close').value)||30;
+
+  const sMid  = calcScenario(inv,days,cpl,rReal,rMid, rCloseMid, ticket);
+  const sHigh = calcScenario(inv,days,cpl,rReal,rHigh,rCloseHigh,ticket);
+  const sLow  = calcScenario(inv,days,cpl,rReal,rLow, rCloseLow, ticket);
+
+  el('sc-mid-real').textContent  = fN(sMid.reales);
+  el('sc-mid-pc').textContent    = fN(sMid.prospects);
+  el('sc-mid-v').textContent     = fN(sMid.ventas);
+  el('sc-mid-f').textContent     = fS(sMid.revenue);
+
+  el('sc-high-real').textContent  = fN(sHigh.reales);
+  el('sc-high-pc').textContent    = fN(sHigh.prospects);
+  el('sc-high-v').textContent     = fN(sHigh.ventas);
+  el('sc-high-f').textContent     = fS(sHigh.revenue);
+  const dH=sHigh.revenue-sMid.revenue;
+  el('sc-high-delta').textContent=(dH>=0?`▲ +${fS(Math.abs(dH))}`:`▼ −${fS(Math.abs(dH))}`)+' vs actual';
+
+  el('sc-low-real').textContent  = fN(sLow.reales);
+  el('sc-low-pc').textContent    = fN(sLow.prospects);
+  el('sc-low-v').textContent     = fN(sLow.ventas);
+  el('sc-low-f').textContent     = fS(sLow.revenue);
+  const dL=sLow.revenue-sMid.revenue;
+  el('sc-low-delta').textContent=(dL>=0?`▲ +${fS(Math.abs(dL))}`:`▼ −${fS(Math.abs(dL))}`)+' vs actual';
+}
+
+
+function exportCSV(){
+  if(!cur)return;
+  const{d,inv,days,cpl,rReal,rProsp,rClose,ticket}=cur;
+  const H=['Día','Inversión PEN','CPL','Días','%Conv.Real','%Posib.Cliente','%Cierre','Ticket',
+    'Leads','Conv.Reales','Posibles C.','Ventas','Facturación','Fact.Acum.'];
+  const lines=[H.join(',')];
+  d.rows.forEach(r=>lines.push([r.day,inv,cpl,days,rReal,rProsp,rClose,ticket,
+    r.leads.toFixed(2),r.reales.toFixed(2),r.prospects.toFixed(2),
+    r.ventas.toFixed(2),r.revenue.toFixed(2),r.cumRev.toFixed(2)].join(',')));
+  const a=Object.assign(document.createElement('a'),{
+    href:URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'})),
+    download:`proyeccion_${days}dias.csv`
+  });
+  a.click();URL.revokeObjectURL(a.href);
+}
+
+function init(){
+  el('last-update').textContent=`Última actualización: hoy, ${new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'})}`;
+  ['investment','cpl','r-real','r-prospect','r-close','ticket'].forEach(id=>
+    el(id).addEventListener('input',()=>{scManual={mid:false,high:false,low:false};scCloseManual={mid:false,high:false,low:false};render();}));
+  ['var-up','var-dn'].forEach(id=>el(id).addEventListener('input',()=>{scManual={mid:false,high:false,low:false};render();}));
+
+  // Scenario conv ratio inputs — manually editable
+  el('sc-mid-input').addEventListener('input',()=>{scManual.mid=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
+  el('sc-high-input').addEventListener('input',()=>{scManual.high=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
+  el('sc-low-input').addEventListener('input',()=>{scManual.low=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
+
+  // Scenario close ratio inputs — independently editable per column
+  el('sc-mid-close').addEventListener('input',()=>{scCloseManual.mid=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
+  el('sc-high-close').addEventListener('input',()=>{scCloseManual.high=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
+  el('sc-low-close').addEventListener('input',()=>{scCloseManual.low=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
+
+  // Active CPL preset
+  const initCPL=parseFloat(el('cpl').value);
+  document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('on',parseFloat(b.textContent.replace('S/',''))===initCPL));
+  render();
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
