@@ -157,22 +157,38 @@
 
   /* ══ Chart block ════════════════════════════════════════ */
   .chart-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
-  .chart-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .chart-header{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .chart-title{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.01em}
-  .chart-sub{font-size:14px;color:var(--text-2);margin-top:3px}
-  .chart-badge{display:inline-flex;align-items:center;gap:6px;background:#F1F5F9;color:var(--muted);border-radius:20px;padding:3px 10px;font-size:13px;font-weight:500}
-  .chart-body{padding:20px 20px 0}
-  .chart-slider-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-  .chart-slider-lbl{font-size:14px;font-weight:500;color:var(--text-2);white-space:nowrap;min-width:150px}
+  .chart-sub{font-size:13px;color:var(--text-2);margin-top:3px}
+  .chart-badge{display:inline-flex;align-items:center;gap:6px;background:#F1F5F9;color:var(--muted);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;white-space:nowrap}
+
+  /* Layout: izquierda indicadores · derecha gráfico */
+  .chart-layout{display:flex;align-items:stretch;min-height:340px}
+  .chart-left{width:230px;min-width:210px;border-right:1px solid var(--border);padding:20px 18px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+  .chart-right{flex:1;padding:20px 20px 0;min-width:0;display:flex;flex-direction:column}
+
+  /* KPI stack (izquierda) */
+  .ckpi{padding:11px 14px;border-radius:var(--r-sm);background:#F8FAFC}
+  .ckpi.ckpi-hi{background:#EFF6FF}
+  .ckpi-lbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .ckpi-val{font-size:24px;font-weight:600;color:var(--text);letter-spacing:-.02em;line-height:1}
+  .ckpi-val.brand{color:var(--brand)}
+  .ckpi-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+  /* Ratio referencial (izquierda) */
+  .chart-ref{background:#DBEAFE;border-radius:var(--r-sm);padding:12px 14px;margin-top:auto}
+  .chart-ref-lbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-text);margin-bottom:2px}
+  .chart-ref-val{font-size:22px;font-weight:600;color:var(--brand);line-height:1}
+  .chart-ref-desc{font-size:12px;color:var(--brand-text);margin-top:3px;line-height:1.4;opacity:.85}
+
+  /* Slider (derecha) */
+  .chart-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .chart-slider-lbl{font-size:13px;font-weight:500;color:var(--text-2);white-space:nowrap}
   .chart-range{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--brand-soft);outline:none;cursor:pointer}
   .chart-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--brand);border:2px solid #fff;box-shadow:0 1px 4px rgba(37,99,235,.3);cursor:pointer}
-  .chart-slider-val{font-size:18px;font-weight:600;color:var(--brand);min-width:44px;text-align:right}
-  .chart-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-top:16px}
-  .chart-kpi{background:var(--card);padding:12px 16px}
-  .chart-kpi-highlight{background:#F8FAFF}
-  .chart-kpi-lbl{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-  .chart-kpi-val{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.02em}
-  .chart-kpi-val.brand{color:var(--brand)}
+  .chart-slider-val{font-size:17px;font-weight:600;color:var(--brand);min-width:44px;text-align:right}
+  .chart-canvas-wrap{flex:1;position:relative}
+  #chart-canvas{display:block;width:100%}
 
   /* ══ ManyChat CTA ════════════════════════════════════════ */
   .manychat-cta{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;background:#F0F7FF;border-top:1px solid #DBEAFE;flex-wrap:wrap}
@@ -390,44 +406,71 @@
 
   <!-- Gráfico interactivo + CTA ManyChat -->
   <div>
-    <div class="sec-lbl">Simulador de conversión — ¿Qué pasa si mejoras tu seguimiento?</div>
+    <div class="sec-lbl">Simulador de eficiencia</div>
     <div class="chart-block">
+
+      <!-- Header -->
       <div class="chart-header">
         <div>
-          <div class="chart-title">Facturación proyectada según % Conversaciones → Posibles Clientes</div>
-          <div class="chart-sub">Mueve el slider para ver cómo impacta en tu facturación final</div>
+          <div class="chart-title">Descubre cómo impacta mejorar la Eficiencia en tus respuestas.</div>
+          <div class="chart-sub">A mayor % de conversaciones que se convierten en posibles clientes, mayor es tu facturación. Mueve el slider para explorar escenarios.</div>
         </div>
         <div class="chart-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
           Variable clave del embudo
         </div>
       </div>
-      <div class="chart-body">
-        <div class="chart-slider-row">
-          <span class="chart-slider-lbl">% Conv. → Posibles</span>
-          <input id="chart-slider" type="range" min="5" max="95" step="1" value="40" class="chart-range"/>
-          <span class="chart-slider-val"><span id="chart-pct">40</span>%</span>
+
+      <!-- Layout: izquierda KPIs · derecha canvas -->
+      <div class="chart-layout">
+
+        <!-- IZQUIERDA: indicadores del escenario explorado -->
+        <div class="chart-left">
+          <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:2px">Escenario explorado</div>
+
+          <div class="ckpi">
+            <div class="ckpi-lbl">Posibles Clientes</div>
+            <div class="ckpi-val" id="chart-pc">—</div>
+            <div class="ckpi-sub" id="chart-pc-sub">— % de conv.</div>
+          </div>
+
+          <div class="ckpi">
+            <div class="ckpi-lbl">Ventas Cerradas</div>
+            <div class="ckpi-val" id="chart-v">—</div>
+          </div>
+
+          <div class="ckpi ckpi-hi">
+            <div class="ckpi-lbl">Facturación Est.</div>
+            <div class="ckpi-val brand" id="chart-f">—</div>
+          </div>
+
+          <div class="ckpi">
+            <div class="ckpi-lbl">ROI</div>
+            <div class="ckpi-val" id="chart-roi">—</div>
+          </div>
+
+          <!-- Ratio referencial del panel -->
+          <div class="chart-ref">
+            <div class="chart-ref-lbl">Tu ratio actual</div>
+            <div class="chart-ref-val"><span id="chart-ref-pct">40</span>% Conv → Posibles</div>
+            <div class="chart-ref-desc">Valor ingresado en el panel izquierdo. Aparece como referencia en el gráfico.</div>
+          </div>
         </div>
-        <canvas id="chart-canvas" height="200"></canvas>
-        <div class="chart-kpis">
-          <div class="chart-kpi">
-            <div class="chart-kpi-lbl">Posibles Clientes</div>
-            <div class="chart-kpi-val" id="chart-pc">—</div>
+
+        <!-- DERECHA: gráfico -->
+        <div class="chart-right">
+          <div class="chart-slider-row">
+            <span class="chart-slider-lbl">Explorar eficiencia:</span>
+            <input id="chart-slider" type="range" min="5" max="95" step="1" value="40" class="chart-range"/>
+            <span class="chart-slider-val"><span id="chart-pct">40</span>%</span>
           </div>
-          <div class="chart-kpi">
-            <div class="chart-kpi-lbl">Ventas Cerradas</div>
-            <div class="chart-kpi-val" id="chart-v">—</div>
-          </div>
-          <div class="chart-kpi chart-kpi-highlight">
-            <div class="chart-kpi-lbl">Facturación Est.</div>
-            <div class="chart-kpi-val brand" id="chart-f">—</div>
-          </div>
-          <div class="chart-kpi">
-            <div class="chart-kpi-lbl">ROI</div>
-            <div class="chart-kpi-val" id="chart-roi">—</div>
+          <div class="chart-canvas-wrap">
+            <canvas id="chart-canvas"></canvas>
           </div>
         </div>
-      </div>
+
+      </div><!-- /.chart-layout -->
+
       <!-- CTA ManyChat -->
       <div class="manychat-cta">
         <div class="manychat-left">
@@ -444,6 +487,7 @@
           Hablar con Lima Retail
         </a>
       </div>
+
     </div>
   </div>
 
@@ -528,8 +572,12 @@ function render(){
   el('k-ratio').textContent = ratioVentas.toFixed(1)+'%';
   updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi);
   el('exp-note').textContent=`Incluye ${days} días · ${d.rows.length} filas · Generado hoy`;
-  // Redraw chart with current sidebar ratio
-  if(el('chart-slider')) drawChart(parseInt(el('chart-slider').value));
+  // Redraw chart — sync reference line with sidebar r-prospect
+  if(el('chart-slider')){
+    const refV=Math.round(rProsp);
+    if(el('chart-ref-pct')) el('chart-ref-pct').textContent=refV;
+    drawChart(parseInt(el('chart-slider').value), refV);
+  }
 }
 
 
@@ -589,25 +637,25 @@ function init(){
   document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('on',parseFloat(b.textContent.replace('S/',''))===initCPL));
   render();
   initChart();
-  // Sync slider initial position with sidebar r-prospect
-  el('r-prospect').addEventListener('input',()=>{
-    const v=parseFloat(el('r-prospect').value)||40;
-    el('chart-slider').value=Math.round(v);
-    el('chart-pct').textContent=Math.round(v);
-    drawChart(Math.round(v));
-  });
 }
 /* ── Gráfico interactivo ─────────────────────────────── */
-function drawChart(sliderVal){
+function drawChart(sliderVal, refVal){
   if(!cur) return;
-  const {inv,days,cpl,rReal,rClose,ticket} = cur;
-  const canvas = document.getElementById('chart-canvas');
+  const {inv,cpl,rReal,rClose,ticket} = cur;
+  if(refVal===undefined) refVal = parseFloat(el('r-prospect').value)||40;
+
+  const canvas = el('chart-canvas');
+  const wrap   = canvas.parentElement;
+  const W = wrap.clientWidth||600;
+  const H = 240;
+  canvas.width  = W * devicePixelRatio;
+  canvas.height = H * devicePixelRatio;
+  canvas.style.width  = W+'px';
+  canvas.style.height = H+'px';
   const ctx = canvas.getContext('2d');
-  const W = canvas.offsetWidth; const H = 200;
-  canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
   ctx.scale(devicePixelRatio, devicePixelRatio);
 
-  // Data: facturación para cada % de 5..95
+  // Build curve data
   const pts=[];
   for(let pct=5;pct<=95;pct+=2){
     const leads=cpl>0?inv/cpl:0;
@@ -617,65 +665,83 @@ function drawChart(sliderVal){
     pts.push({pct,rev:v*ticket});
   }
   const maxRev=Math.max(...pts.map(p=>p.rev),1);
-  const pad={t:16,r:16,b:36,l:60};
+  const pad={t:20,r:20,b:44,l:64};
   const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+  const toX=pct=>(pad.l+((pct-5)/90)*cW);
+  const toY=rev=>(pad.t+cH*(1-rev/maxRev));
 
-  // Grid lines
+  // Grid
   ctx.strokeStyle='#E2E8F0'; ctx.lineWidth=1;
   [0,.25,.5,.75,1].forEach(f=>{
     const y=pad.t+cH*(1-f);
     ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
-    ctx.fillStyle='#94A3B8';ctx.font='10px system-ui';ctx.textAlign='right';
-    ctx.fillText('S/'+fN(maxRev*f),pad.l-6,y+3);
+    ctx.fillStyle='#94A3B8';ctx.font=`11px system-ui`;ctx.textAlign='right';
+    ctx.fillText('S/'+fN(maxRev*f),pad.l-8,y+4);
   });
 
   // Area fill
-  const toX=pct=>(pad.l+((pct-5)/90)*cW);
-  const toY=rev=>(pad.t+cH*(1-rev/maxRev));
   ctx.beginPath();
   ctx.moveTo(toX(pts[0].pct),pad.t+cH);
   pts.forEach(p=>ctx.lineTo(toX(p.pct),toY(p.rev)));
   ctx.lineTo(toX(pts[pts.length-1].pct),pad.t+cH);
   ctx.closePath();
   const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,'rgba(37,99,235,.18)');grad.addColorStop(1,'rgba(37,99,235,.01)');
+  grad.addColorStop(0,'rgba(37,99,235,.15)');grad.addColorStop(1,'rgba(37,99,235,.01)');
   ctx.fillStyle=grad;ctx.fill();
 
-  // Line
-  ctx.beginPath();ctx.strokeStyle='#2563EB';ctx.lineWidth=2;ctx.lineJoin='round';
+  // Curve line
+  ctx.beginPath();ctx.strokeStyle='#2563EB';ctx.lineWidth=2.5;ctx.lineJoin='round';
   pts.forEach((p,i)=>i===0?ctx.moveTo(toX(p.pct),toY(p.rev)):ctx.lineTo(toX(p.pct),toY(p.rev)));
   ctx.stroke();
 
-  // Current marker
-  const cx2=toX(sliderVal);
-  const leads=cpl>0?inv/cpl:0;
-  const reales=leads*(rReal/100);
-  const prosp=reales*(sliderVal/100);
-  const v=prosp*(rClose/100);
-  const rev=v*ticket;
-  const cy2=toY(rev);
-  // vertical dashed line
-  ctx.setLineDash([4,3]);ctx.strokeStyle='#2563EB';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(cx2,pad.t);ctx.lineTo(cx2,pad.t+cH);ctx.stroke();
+  // ── Línea referencial (valor del panel izquierdo) ──
+  const rx=toX(Math.max(5,Math.min(95,refVal)));
+  const rLeads=cpl>0?inv/cpl:0;
+  const rProsp=rLeads*(rReal/100)*(refVal/100);
+  const rRev=rProsp*(rClose/100)*ticket;
+  const ry=toY(rRev);
+  ctx.setLineDash([5,4]);ctx.strokeStyle='#94A3B8';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(rx,pad.t);ctx.lineTo(rx,pad.t+cH);ctx.stroke();
   ctx.setLineDash([]);
-  // dot
-  ctx.beginPath();ctx.arc(cx2,cy2,6,0,Math.PI*2);ctx.fillStyle='#2563EB';ctx.fill();
-  ctx.beginPath();ctx.arc(cx2,cy2,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  // etiqueta "Tu ratio actual"
+  const labelW=90, labelH=18, labelX=rx-labelW/2, labelY=pad.t+4;
+  ctx.fillStyle='rgba(148,163,184,.15)';
+  ctx.beginPath();ctx.roundRect(labelX,labelY,labelW,labelH,4);ctx.fill();
+  ctx.fillStyle='#64748B';ctx.font='bold 10px system-ui';ctx.textAlign='center';
+  ctx.fillText('Tu ratio actual: '+refVal+'%',rx,labelY+12);
+  // dot gris
+  ctx.beginPath();ctx.arc(rx,ry,5,0,Math.PI*2);ctx.fillStyle='#94A3B8';ctx.fill();
+  ctx.beginPath();ctx.arc(rx,ry,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
 
-  // X-axis labels
+  // ── Marcador slider (valor explorado) ──
+  const sx=toX(Math.max(5,Math.min(95,sliderVal)));
+  const sLeads=cpl>0?inv/cpl:0;
+  const sProsp=sLeads*(rReal/100)*(sliderVal/100);
+  const sV=sProsp*(rClose/100);
+  const sRev=sV*ticket;
+  const sy=toY(sRev);
+  if(Math.abs(sliderVal-refVal)>1){
+    ctx.setLineDash([4,3]);ctx.strokeStyle='#2563EB';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(sx,pad.t);ctx.lineTo(sx,pad.t+cH);ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  ctx.beginPath();ctx.arc(sx,sy,7,0,Math.PI*2);ctx.fillStyle='#2563EB';ctx.fill();
+  ctx.beginPath();ctx.arc(sx,sy,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+
+  // X labels
   [10,20,30,40,50,60,70,80,90].forEach(pct=>{
-    const x=toX(pct);
-    ctx.fillStyle='#94A3B8';ctx.font='10px system-ui';ctx.textAlign='center';
-    ctx.fillText(pct+'%',x,H-pad.b+14);
+    ctx.fillStyle='#94A3B8';ctx.font='11px system-ui';ctx.textAlign='center';
+    ctx.fillText(pct+'%',toX(pct),H-pad.b+16);
   });
-  ctx.fillStyle='#64748B';ctx.font='10px system-ui';ctx.textAlign='center';
-  ctx.fillText('% Conv. → Posibles Clientes',W/2,H-2);
+  ctx.fillStyle='#64748B';ctx.font='11px system-ui';ctx.textAlign='center';
+  ctx.fillText('% Conv. → Posibles Clientes',W/2,H-4);
 
-  // Update KPIs
-  const roi=inv>0?(rev-inv)/inv*100:0;
-  el('chart-pc').textContent=fN(prosp);
-  el('chart-v').textContent=fN(v);
-  el('chart-f').textContent=fS(rev);
+  // Update KPI panel
+  const roi=inv>0?(sRev-inv)/inv*100:0;
+  el('chart-pc').textContent=fN(sProsp);
+  el('chart-pc-sub').textContent=sliderVal+'% de conv.';
+  el('chart-v').textContent=fN(sV);
+  el('chart-f').textContent=fS(sRev);
   const roiC=el('chart-roi');
   roiC.textContent=(roi>=0?'▲ ':'▼ ')+Math.abs(roi).toFixed(0)+'%';
   roiC.style.color=roi>=0?'var(--brand)':'var(--red)';
@@ -684,6 +750,7 @@ function drawChart(sliderVal){
 function initChart(){
   const slider=el('chart-slider');
   const pctLbl=el('chart-pct');
+  const refLbl=el('chart-ref-pct');
   function update(){
     const v=parseInt(slider.value);
     pctLbl.textContent=v;
@@ -691,6 +758,14 @@ function initChart(){
   }
   slider.addEventListener('input',update);
   window.addEventListener('resize',()=>drawChart(parseInt(slider.value)));
+  // Sync ref label when sidebar r-prospect changes
+  el('r-prospect').addEventListener('input',()=>{
+    const v=parseFloat(el('r-prospect').value)||40;
+    refLbl.textContent=Math.round(v);
+    slider.value=Math.round(v);
+    pctLbl.textContent=Math.round(v);
+    drawChart(Math.round(v),Math.round(v));
+  });
   update();
 }
 
