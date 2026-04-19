@@ -844,9 +844,10 @@ function drawChart(sliderVal,refVal){
   ctx.fillText('% Conv. → Posibles Clientes',W/2,H-4);
 
   /* ── Actualizar KPIs panel izquierdo ── */
-  const{inv}=cur;
-  const sProsp=cur.inv>0?(cpl>0?inv/cpl:0)*(cur.rReal/100)*(sliderVal/100):0;
-  const sV=sProsp*(cur.rClose/100);
+  const{inv,cpl,rReal,rClose}=cur;
+  const leads=cpl>0?inv/cpl:0;
+  const sProsp=leads*(rReal/100)*(sliderVal/100);
+  const sV=sProsp*(rClose/100);
   const roi=inv>0?(sRev-inv)/inv*100:0;
   el('chart-pc').textContent=fN(sProsp);
   el('chart-pc-sub').textContent=sliderVal+'% de conv.';
