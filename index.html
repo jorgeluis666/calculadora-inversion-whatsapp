@@ -164,22 +164,34 @@
 
   /* Layout: izquierda indicadores · derecha gráfico */
   .chart-layout{display:flex;align-items:stretch;min-height:340px}
-  .chart-left{width:230px;min-width:210px;border-right:1px solid var(--border);padding:20px 18px;display:flex;flex-direction:column;gap:10px;flex-shrink:0}
-  .chart-right{flex:1;padding:20px 20px 0;min-width:0;display:flex;flex-direction:column}
+  .chart-left{width:240px;min-width:220px;border-right:1px solid var(--border);padding:16px 16px 16px;display:flex;flex-direction:column;gap:0;flex-shrink:0;overflow-y:auto}
+  .chart-right{flex:1;padding:18px 20px 0;min-width:0;display:flex;flex-direction:column}
 
-  /* KPI stack (izquierda) */
-  .ckpi{padding:11px 14px;border-radius:var(--r-sm);background:#F8FAFC}
-  .ckpi.ckpi-hi{background:#EFF6FF}
-  .ckpi-lbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
-  .ckpi-val{font-size:24px;font-weight:600;color:var(--text);letter-spacing:-.02em;line-height:1}
-  .ckpi-val.brand{color:var(--brand)}
-  .ckpi-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  /* Embudo en columna izquierda */
+  .cfl-sec{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .cfl-item{display:flex;align-items:flex-start;gap:8px;padding:7px 8px;border-radius:7px;transition:background .1s}
+  .cfl-item.cfl-hi{background:#EFF6FF;border:1px solid #BFDBFE;padding:9px 10px;margin:-1px}
+  .cfl-item.cfl-brand{background:#EFF6FF}
+  .cfl-num{width:18px;height:18px;border-radius:50%;background:#F1F5F9;color:var(--muted);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
+  .cfl-hi .cfl-num{background:#DBEAFE;color:var(--brand-text)}
+  .cfl-brand .cfl-num{background:#DBEAFE;color:var(--brand-text)}
+  .cfl-info{flex:1;min-width:0}
+  .cfl-lbl{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:1px;display:flex;align-items:center;gap:5px}
+  .cfl-hi .cfl-lbl{color:var(--brand-text)}
+  .cfl-key{font-size:9px;background:#DBEAFE;color:var(--brand);border-radius:20px;padding:1px 6px;font-weight:600;letter-spacing:.04em;white-space:nowrap}
+  .cfl-val{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.01em;line-height:1.1}
+  .cfl-hi .cfl-val{font-size:20px;color:var(--brand)}
+  .cfl-brand-item .cfl-val{color:var(--brand)}
+  .cfl-sub{font-size:11px;color:var(--muted);margin-top:1px}
+  .cfl-hi .cfl-sub{color:var(--brand-text);opacity:.8}
+  .cfl-arrow{text-align:left;padding-left:22px;color:#CBD5E1;font-size:11px;line-height:1;height:10px;display:flex;align-items:center}
+  .cfl-hi-arrow{color:#93C5FD}
 
-  /* Ratio referencial (izquierda) */
-  .chart-ref{background:#DBEAFE;border-radius:var(--r-sm);padding:12px 14px;margin-top:auto}
-  .chart-ref-lbl{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-text);margin-bottom:2px}
-  .chart-ref-val{font-size:22px;font-weight:600;color:var(--brand);line-height:1}
-  .chart-ref-desc{font-size:12px;color:var(--brand-text);margin-top:3px;line-height:1.4;opacity:.85}
+  /* Ratio referencial (pie) */
+  .chart-ref{background:#F8FAFC;border-top:1px solid var(--border);padding:10px 8px;margin-top:auto}
+  .chart-ref-lbl{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:1px}
+  .chart-ref-val{font-size:13px;font-weight:600;color:var(--brand)}
+  .chart-ref-desc{font-size:11px;color:var(--muted);margin-top:1px;line-height:1.35}
 
   /* Slider (derecha) */
   .chart-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
@@ -217,18 +229,20 @@
     .fc-mini{min-width:calc(33.33% - 1px);border-bottom:1px solid var(--border)}
     .fc-mini:last-child{border-bottom:none}
 
-    /* Gráfico: apilar verticalmente (canvas arriba, KPIs abajo) */
+    /* Gráfico: apilar verticalmente (canvas arriba, embudo abajo) */
     .chart-layout{flex-direction:column}
     .chart-left{
-      width:100%;border-right:none;
+      width:100%;min-width:0;border-right:none;
       border-top:1px solid var(--border);
-      padding:16px 18px;
-      display:grid;grid-template-columns:1fr 1fr;gap:8px;
-      order:2
+      padding:14px 16px;order:2;
+      display:grid;grid-template-columns:1fr 1fr;gap:0 12px;
+      align-items:start
     }
-    .chart-left > div:first-child{grid-column:1/-1}  /* label "Escenario explorado" */
-    .chart-ref{grid-column:1/-1}                      /* "Tu ratio actual" full width */
-    .chart-right{order:1;padding:16px 18px 0}
+    .cfl-sec{grid-column:1/-1}
+    .chart-ref{grid-column:1/-1;margin-top:8px}
+    /* Flechas: ocultar en grid de 2 cols para no ocupar espacio */
+    .cfl-arrow{display:none}
+    .chart-right{order:1;padding:14px 16px 0}
     .chart-canvas-wrap{min-height:200px}
 
     /* ManyChat CTA */
@@ -250,9 +264,10 @@
     .interp-box{padding:14px 16px}
     .interp-item{font-size:13px}
 
-    /* Gráfico: KPIs en 1 columna */
+    /* Gráfico: embudo en 1 columna, flechas visibles */
     .chart-left{grid-template-columns:1fr}
     .chart-ref{grid-column:auto}
+    .cfl-arrow{display:flex}
     .chart-slider-row{flex-wrap:wrap;gap:8px}
     .chart-slider-lbl{width:100%}
     .chart-slider-val{min-width:40px}
@@ -487,36 +502,91 @@
       <!-- Layout: izquierda KPIs · derecha canvas -->
       <div class="chart-layout">
 
-        <!-- IZQUIERDA: indicadores del escenario explorado -->
+        <!-- IZQUIERDA: embudo completo en orden -->
         <div class="chart-left">
-          <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:2px">Escenario explorado</div>
+          <div class="cfl-sec">Embudo — escenario explorado</div>
 
-          <div class="ckpi">
-            <div class="ckpi-lbl">Posibles Clientes</div>
-            <div class="ckpi-val" id="chart-pc">—</div>
-            <div class="ckpi-sub" id="chart-pc-sub">— % de conv.</div>
+          <!-- 1 Inversión -->
+          <div class="cfl-item cfl-brand-item">
+            <div class="cfl-num">1</div>
+            <div class="cfl-info">
+              <div class="cfl-lbl">Inversión</div>
+              <div class="cfl-val" id="cfl-inv">—</div>
+              <div class="cfl-sub" id="cfl-cpl">—</div>
+            </div>
+          </div>
+          <div class="cfl-arrow">↓</div>
+
+          <!-- 2 Total Leads -->
+          <div class="cfl-item">
+            <div class="cfl-num">2</div>
+            <div class="cfl-info">
+              <div class="cfl-lbl">Total Leads</div>
+              <div class="cfl-val" id="cfl-leads">—</div>
+              <div class="cfl-sub">Inv ÷ CPL</div>
+            </div>
+          </div>
+          <div class="cfl-arrow">↓</div>
+
+          <!-- 3 Conversaciones -->
+          <div class="cfl-item">
+            <div class="cfl-num">3</div>
+            <div class="cfl-info">
+              <div class="cfl-lbl">Conversaciones</div>
+              <div class="cfl-val" id="cfl-conv">—</div>
+              <div class="cfl-sub" id="cfl-conv-r">—</div>
+            </div>
+          </div>
+          <div class="cfl-arrow cfl-hi-arrow">↓</div>
+
+          <!-- 4 Posibles Clientes — VARIABLE CLAVE -->
+          <div class="cfl-item cfl-hi">
+            <div class="cfl-num">4</div>
+            <div class="cfl-info">
+              <div class="cfl-lbl">Posibles Clientes <span class="cfl-key">eficiencia</span></div>
+              <div class="cfl-val" id="cfl-pc">—</div>
+              <div class="cfl-sub" id="cfl-pc-r">—% de conv.</div>
+            </div>
+          </div>
+          <div class="cfl-arrow">↓</div>
+
+          <!-- 5 Ventas Cerradas -->
+          <div class="cfl-item">
+            <div class="cfl-num">5</div>
+            <div class="cfl-info">
+              <div class="cfl-lbl">Ventas Cerradas</div>
+              <div class="cfl-val" id="cfl-v">—</div>
+              <div class="cfl-sub" id="cfl-v-r">—</div>
+            </div>
+          </div>
+          <div class="cfl-arrow">↓</div>
+
+          <!-- 6 Ratio de Ventas -->
+          <div class="cfl-item">
+            <div class="cfl-num">6</div>
+            <div class="cfl-info">
+              <div class="cfl-lbl">Ratio de Ventas</div>
+              <div class="cfl-val" id="cfl-ratio">—%</div>
+              <div class="cfl-sub">Ventas ÷ Leads</div>
+            </div>
+          </div>
+          <div class="cfl-arrow">↓</div>
+
+          <!-- 7 Facturación -->
+          <div class="cfl-item cfl-brand">
+            <div class="cfl-num">7</div>
+            <div class="cfl-info">
+              <div class="cfl-lbl">Facturación Est.</div>
+              <div class="cfl-val" id="cfl-rev">—</div>
+              <div class="cfl-sub" id="cfl-roi">ROI —</div>
+            </div>
           </div>
 
-          <div class="ckpi">
-            <div class="ckpi-lbl">Ventas Cerradas</div>
-            <div class="ckpi-val" id="chart-v">—</div>
-          </div>
-
-          <div class="ckpi ckpi-hi">
-            <div class="ckpi-lbl">Facturación Est.</div>
-            <div class="ckpi-val brand" id="chart-f">—</div>
-          </div>
-
-          <div class="ckpi">
-            <div class="ckpi-lbl">ROI</div>
-            <div class="ckpi-val" id="chart-roi">—</div>
-          </div>
-
-          <!-- Ratio referencial del panel -->
-          <div class="chart-ref">
-            <div class="chart-ref-lbl">Tu ratio actual</div>
+          <!-- Pie: ratio referencial -->
+          <div class="chart-ref" style="margin-top:12px">
+            <div class="chart-ref-lbl">Tu ratio actual (panel)</div>
             <div class="chart-ref-val"><span id="chart-ref-pct">40</span>% Conv → Posibles</div>
-            <div class="chart-ref-desc">Valor ingresado en el panel izquierdo. Aparece como referencia en el gráfico.</div>
+            <div class="chart-ref-desc">Línea de referencia en el gráfico.</div>
           </div>
         </div>
 
@@ -843,19 +913,29 @@ function drawChart(sliderVal,refVal){
   ctx.fillStyle='#64748B';ctx.font='11px system-ui';ctx.textAlign='center';
   ctx.fillText('% Conv. → Posibles Clientes',W/2,H-4);
 
-  /* ── Actualizar KPIs panel izquierdo ── */
-  const{inv,cpl,rReal,rClose}=cur;
+  /* ── Actualizar embudo izquierdo ── */
+  const{inv,cpl,rReal,rClose,ticket}=cur;
   const leads=cpl>0?inv/cpl:0;
-  const sProsp=leads*(rReal/100)*(sliderVal/100);
+  const reales=leads*(rReal/100);
+  const sProsp=reales*(sliderVal/100);
   const sV=sProsp*(rClose/100);
+  const ratioV=leads>0?(sV/leads*100):0;
   const roi=inv>0?(sRev-inv)/inv*100:0;
-  el('chart-pc').textContent=fN(sProsp);
-  el('chart-pc-sub').textContent=sliderVal+'% de conv.';
-  el('chart-v').textContent=fN(sV);
-  el('chart-f').textContent=fS(sRev);
-  const roiC=el('chart-roi');
-  roiC.textContent=(roi>=0?'▲ ':'▼ ')+Math.abs(roi).toFixed(0)+'%';
-  roiC.style.color=roi>=0?'var(--brand)':'var(--red)';
+
+  el('cfl-inv').textContent  = fS(inv);
+  el('cfl-cpl').textContent  = 'CPL '+fS(cpl,2);
+  el('cfl-leads').textContent= fN(leads);
+  el('cfl-conv').textContent = fN(reales);
+  el('cfl-conv-r').textContent = rReal+'% de leads';
+  el('cfl-pc').textContent   = fN(sProsp);
+  el('cfl-pc-r').textContent = sliderVal+'% de conv.';
+  el('cfl-v').textContent    = fN(sV);
+  el('cfl-v-r').textContent  = rClose+'% de posibles';
+  el('cfl-ratio').textContent= ratioV.toFixed(1)+'%';
+  el('cfl-rev').textContent  = fS(sRev);
+  const roiEl=el('cfl-roi');
+  roiEl.textContent=(roi>=0?'ROI ▲ ':'ROI ▼ ')+Math.abs(roi).toFixed(0)+'%';
+  roiEl.style.color=roi>=0?'var(--brand)':'var(--red)';
 }
 
 function initChart(){
