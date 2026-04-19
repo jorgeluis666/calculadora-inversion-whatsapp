@@ -90,8 +90,8 @@
   .sec-lbl{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:16px}
 
   /* ══ SVG icons ══════════════════════════════════════════ */
-  .ic{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;margin-bottom:10px;flex-shrink:0}
-  .ic svg{width:16px;height:16px;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .ic{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;margin-bottom:8px;flex-shrink:0}
+  .ic svg{width:13px;height:13px;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
   .ic-brand  {background:#DBEAFE} .ic-brand svg  {stroke:#1D4ED8}
   .ic-slate  {background:#F1F5F9}  .ic-slate svg  {stroke:#475569}
   .ic-teal   {background:#D1FAE5}  .ic-teal svg   {stroke:#047857}
@@ -99,28 +99,30 @@
   .ic-orange {background:#FEF3C7} .ic-orange svg {stroke:#B45309}
   .ic-gold   {background:#FEF3C7}  .ic-gold svg   {stroke:#B45309}
 
-  /* ══ Funnel (KPI cards con acento lateral) ═══════════════ */
-  .funnel{display:flex;flex-direction:column;gap:12px}
-  .funnel-row{display:flex;align-items:stretch;gap:0}
-  .funnel-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;display:flex;flex-direction:column}
-  .funnel-card:hover{transform:translateY(-1px);box-shadow:var(--sh2)}
-  .funnel-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-  .fc-brand::before  {background:var(--brand)}
-  .fc-slate::before  {background:var(--border)}
-  .fc-teal::before   {background:var(--teal)}
-  .fc-violet::before {background:var(--violet)}
-  .fc-orange::before {background:var(--orange)}
-  .fc-gold::before   {background:var(--orange)}
-  .fc-label{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;padding-right:40px}
-  .fc-value{font-size:24px;font-weight:600;color:var(--text);line-height:1;letter-spacing:-.02em;margin-bottom:6px}
-  .fc-value.brand  {color:var(--brand)}
-  .fc-value.teal   {color:var(--teal)}
-  .fc-value.violet {color:var(--violet)}
-  .fc-value.orange {color:var(--orange)}
-  .fc-value.gold   {color:var(--orange)}
-  .fc-ratio{display:inline-flex;align-items:center;gap:4px;background:#F1F5F9;border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;color:var(--text-2);margin-bottom:7px;width:fit-content}
-  .fc-desc{font-size:12px;color:var(--text-2);line-height:1.55;flex:1}
-  .funnel-arrow{display:flex;align-items:center;padding:0 8px;color:var(--muted);font-size:18px;flex-shrink:0;align-self:center}
+  /* ══ Funnel strip — fila única ═══════════════════════════ */
+  .funnel-strip{display:flex;align-items:stretch;background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+  .fc-mini{flex:1;min-width:120px;padding:14px 14px 13px;position:relative;overflow:hidden;display:flex;flex-direction:column;border-right:1px solid var(--border)}
+  .fc-mini:last-child{border-right:none}
+  .fc-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .fc-brand::before{background:var(--brand)}
+  .fc-slate::before{background:var(--border)}
+  .fc-step{position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;color:var(--muted);background:#F1F5F9;border-radius:20px;padding:1px 7px;line-height:1.6}
+  .fc-label{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+  .fc-value{font-size:22px;font-weight:600;color:var(--text);line-height:1;letter-spacing:-.02em;margin-bottom:5px}
+  .fc-value.brand{color:var(--brand)}
+  .fc-ratio{display:inline-flex;align-items:center;gap:4px;background:#F1F5F9;border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:10px;font-weight:500;color:var(--text-2);width:fit-content}
+
+  /* ══ Interpretation block ════════════════════════════════ */
+  .interp-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;box-shadow:var(--sh)}
+  .interp-title{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  .interp-title::after{content:'';flex:1;height:1px;background:var(--border)}
+  .interp-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .interp-item{display:flex;align-items:flex-start;gap:11px;font-size:13px;color:var(--text-2);line-height:1.55}
+  .interp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+  .interp-item strong{color:var(--text);font-weight:600}
+
+  /* legacy — kept for compat refs, not rendered */
+  .funnel-arrow{display:none}
 
   /* ══ Simulation ══════════════════════════════════════════ */
   .sim-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
@@ -196,8 +198,8 @@
   .exp-note{font-size:12px;color:var(--muted)}
 
   @media(max-width:900px){
-    .funnel-arrow{display:none}
-    .funnel-row{flex-wrap:wrap}
+    .funnel-strip{flex-wrap:wrap}
+    .fc-mini{min-width:calc(50% - 1px);border-bottom:1px solid var(--border)}
     .sc-grid{grid-template-columns:1fr}
     .sidebar{width:100%;min-width:0}
     .layout{flex-direction:column}
@@ -284,96 +286,102 @@
 
   <div class="content">
 
-  <!-- Funnel -->
+  <!-- Funnel strip + Interpretación -->
   <div>
     <div class="sec-lbl">Embudo de conversión — de la inversión a la facturación</div>
-    <div class="funnel">
-      <div class="funnel-row">
 
-        <div class="funnel-card fc-brand">
-          <div class="ic ic-brand">
-            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-          </div>
-          <div class="fc-label">Inversión Total</div>
-          <div class="fc-value brand" id="k-inv">S/800</div>
-          <div class="fc-desc">Presupuesto total asignado a tu campaña. Es el punto de partida de toda la proyección.</div>
+    <!-- Fila única con los 6 indicadores -->
+    <div class="funnel-strip">
+
+      <div class="fc-mini fc-brand">
+        <span class="fc-step">1</span>
+        <div class="ic ic-brand">
+          <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
         </div>
-
-        <div class="funnel-arrow">→</div>
-
-        <div class="funnel-card fc-slate">
-          <div class="ic ic-slate">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <div class="fc-label">Total Leads</div>
-          <div class="fc-value" id="k-leads">267</div>
-          <div class="fc-ratio" id="k-leads-ratio">CPL S/3.00</div>
-          <div class="fc-desc">Contactos que generará tu inversión. Se obtiene dividiendo el presupuesto entre el costo por conversación (CPL).</div>
-        </div>
-
-        <div class="funnel-arrow">→</div>
-
-        <div class="funnel-card fc-slate">
-          <div class="ic ic-slate">
-            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div class="fc-label">Leads Reales (Conversaciones)</div>
-          <div class="fc-value" id="k-real">213</div>
-          <div class="fc-ratio" id="k-real-ratio">80% de leads</div>
-          <div class="fc-desc">Conversaciones genuinas estimadas. Solo una parte de tus leads responde activamente e inicia un diálogo real con tu equipo.</div>
-        </div>
-
-        <div class="funnel-arrow">→</div>
-
-        <div class="funnel-card fc-slate">
-          <div class="ic ic-slate">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-          </div>
-          <div class="fc-label">Posibles Clientes</div>
-          <div class="fc-value" id="k-prospect">85</div>
-          <div class="fc-ratio" id="k-prospect-ratio">40% de conversaciones</div>
-          <div class="fc-desc">Prospectos con intención real de compra. Son quienes, tras conversar con tu equipo, muestran interés genuino en tu producto.</div>
-        </div>
-
+        <div class="fc-label">Inversión</div>
+        <div class="fc-value brand" id="k-inv">S/800</div>
+        <div class="fc-ratio" id="k-leads-ratio">CPL S/3.00</div>
       </div>
 
-      <div class="funnel-row">
-
-        <div class="funnel-card fc-slate" style="flex:none;width:calc(25% - 18px)">
-          <div class="ic ic-slate">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </div>
-          <div class="fc-label">Ventas Cerradas</div>
-          <div class="fc-value" id="k-sales">26</div>
-          <div class="fc-ratio" id="k-sales-ratio">30% de posibles clientes</div>
-          <div class="fc-desc">Clientes que completaron la compra. Se aplica tu ratio de cierre sobre los posibles clientes del embudo.</div>
+      <div class="fc-mini fc-slate">
+        <span class="fc-step">2</span>
+        <div class="ic ic-slate">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
-
-        <div class="funnel-arrow">→</div>
-
-        <div class="funnel-card fc-slate" style="flex:none;width:calc(25% - 18px)">
-          <div class="ic ic-slate">
-            <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-          </div>
-          <div class="fc-label">Ticket Promedio</div>
-          <div class="fc-value" id="k-ticket">S/157.42</div>
-          <div class="fc-desc">Valor promedio de cada venta cerrada. Es el ingreso que genera cada cliente que concreta su compra.</div>
-        </div>
-
-        <div class="funnel-arrow">→</div>
-
-        <div class="funnel-card fc-brand" style="flex:none;width:calc(50% - 15px)">
-          <div class="ic ic-brand">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div class="fc-label">Facturación Estimada</div>
-          <div class="fc-value brand" id="k-revenue">S/4,030</div>
-          <div class="fc-ratio" id="k-roi-badge" style="color:var(--brand)">ROI ▲ —%</div>
-          <div class="fc-desc">Ingresos totales proyectados. Resulta de multiplicar las ventas cerradas por el ticket promedio. El ROI compara estos ingresos con tu inversión inicial.</div>
-        </div>
-
+        <div class="fc-label">Total Leads</div>
+        <div class="fc-value" id="k-leads">267</div>
+        <div class="fc-ratio">Inv ÷ CPL</div>
       </div>
+
+      <div class="fc-mini fc-slate">
+        <span class="fc-step">3</span>
+        <div class="ic ic-slate">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="fc-label">Conversaciones</div>
+        <div class="fc-value" id="k-real">213</div>
+        <div class="fc-ratio" id="k-real-ratio">80% de leads</div>
+      </div>
+
+      <div class="fc-mini fc-slate">
+        <span class="fc-step">4</span>
+        <div class="ic ic-slate">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <div class="fc-label">Posibles Clientes</div>
+        <div class="fc-value" id="k-prospect">85</div>
+        <div class="fc-ratio" id="k-prospect-ratio">40% de conv.</div>
+      </div>
+
+      <div class="fc-mini fc-slate">
+        <span class="fc-step">5</span>
+        <div class="ic ic-slate">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="fc-label">Ventas Cerradas</div>
+        <div class="fc-value" id="k-sales">26</div>
+        <div class="fc-ratio" id="k-sales-ratio">30% de posibles</div>
+      </div>
+
+      <div class="fc-mini fc-brand">
+        <span class="fc-step">6</span>
+        <div class="ic ic-brand">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div class="fc-label">Facturación Est.</div>
+        <div class="fc-value brand" id="k-revenue">S/4,030</div>
+        <div class="fc-ratio" id="k-roi-badge">ROI ▲ —%</div>
+      </div>
+
+    </div><!-- /.funnel-strip -->
+
+    <!-- Bloque de interpretación -->
+    <div class="interp-box" style="margin-top:12px">
+      <div class="interp-title">Cómo interpretar tu proyección</div>
+      <ul class="interp-list">
+        <li class="interp-item">
+          <span class="interp-dot" style="background:var(--brand)"></span>
+          <span id="interp-1"></span>
+        </li>
+        <li class="interp-item">
+          <span class="interp-dot" style="background:var(--muted)"></span>
+          <span id="interp-2"></span>
+        </li>
+        <li class="interp-item">
+          <span class="interp-dot" style="background:var(--muted)"></span>
+          <span id="interp-3"></span>
+        </li>
+        <li class="interp-item">
+          <span class="interp-dot" style="background:var(--muted)"></span>
+          <span id="interp-4"></span>
+        </li>
+        <li class="interp-item">
+          <span class="interp-dot" style="background:var(--brand)"></span>
+          <span id="interp-5"></span>
+        </li>
+      </ul>
     </div>
+
   </div>
 
   <!-- Simulation -->
@@ -579,14 +587,14 @@ function render(){
   el('k-real').textContent        = fN(d.reales);
   el('k-real-ratio').textContent  = `${rReal}% de leads`;
   el('k-prospect').textContent    = fN(d.prospects);
-  el('k-prospect-ratio').textContent=`${rProsp}% de conversaciones`;
+  el('k-prospect-ratio').textContent=`${rProsp}% de conv.`;
   el('k-sales').textContent       = fN(d.ventas);
-  el('k-sales-ratio').textContent = `${rClose}% de posibles clientes`;
-  el('k-ticket').textContent      = fS(ticket,2);
+  el('k-sales-ratio').textContent = `${rClose}% de posibles`;
   el('k-revenue').textContent     = fS(d.revenue);
   const roiEl=el('k-roi-badge');
   roiEl.textContent=`ROI ${roi>=0?'▲':'▼'} ${Math.abs(roi).toFixed(1)}%`;
   roiEl.style.color=roi>=0?'var(--brand)':'var(--red)';
+  updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi);
 
   // Update scenario inputs if not manually overridden
   if(!scManual.mid)  el('sc-mid-input').value  = rProsp.toFixed(1);
@@ -635,6 +643,38 @@ function renderScenarios(inv,days,cpl,rReal,ticket){
   el('sc-low-delta').textContent=(dL>=0?`▲ +${fS(Math.abs(dL))}`:`▼ −${fS(Math.abs(dL))}`)+' vs actual';
 }
 
+
+function b(txt){return`<strong>${txt}</strong>`}
+
+function updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi){
+  const leads    = Math.round(d.leads);
+  const reales   = Math.round(d.reales);
+  const prosp    = Math.round(d.prospects);
+  const ventas   = Math.round(d.ventas);
+  const revenue  = fS(d.revenue);
+  const roiAbs   = Math.abs(roi).toFixed(0);
+  const roiSign  = roi>=0?'positivo':'negativo';
+
+  el('interp-1').innerHTML=
+    `Con una inversión de ${b(fS(inv))} y un costo por conversación de ${b(fS(cpl,2))}, `+
+    `tu campaña generará ${b(leads+' mensajes')} de posibles compradores en WhatsApp.`;
+
+  el('interp-2').innerHTML=
+    `De esos ${b(leads+' mensajes')}, solo el ${b(rReal+'%')} responde activamente e inicia `+
+    `un diálogo real con tu equipo — son ${b(reales+' conversaciones genuinas')}.`;
+
+  el('interp-3').innerHTML=
+    `De esas ${b(reales+' conversaciones')}, el ${b(rProsp+'%')} muestra intención real de compra. `+
+    `Eso te deja ${b(prosp+' posibles clientes')} a los que hacer seguimiento comercial.`;
+
+  el('interp-4').innerHTML=
+    `Aplicando tu ratio de cierre del ${b(rClose+'%')} sobre esos posibles clientes, `+
+    `cerrarás aproximadamente ${b(ventas+' ventas')} en el período.`;
+
+  el('interp-5').innerHTML=
+    `Con un ticket promedio de ${b(fS(ticket,2))}, la facturación proyectada es ${b(revenue)}. `+
+    `Eso representa un ROI ${b(roiSign+' del '+roiAbs+'%')} sobre la inversión inicial.`;
+}
 
 function exportCSV(){
   if(!cur)return;
