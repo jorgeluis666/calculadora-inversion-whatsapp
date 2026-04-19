@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lima Retail DS</title>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --sidebar-bg:    #0F172A;
+  --sidebar-text:  #CBD5E1;
+  --sidebar-muted: #475569;
+  --bg:            #F3F4F6;
+  --card:          #FFFFFF;
+  --border:        #E2E8F0;
+  --brand:         #2563EB; --brand-soft:  #DBEAFE; --brand-text:  #1D4ED8;
+  --green:         #059669; --green-soft:  #D1FAE5; --green-text:  #047857;
+  --amber:         #D97706; --amber-soft:  #FEF3C7; --amber-text:  #B45309;
+  --red:           #DC2626; --red-soft:    #FEE2E2; --red-text:    #B91C1C;
+  --purple:        #7C3AED; --purple-soft: #EDE9FE; --purple-text: #6D28D9;
+  --text:          #0F172A;
+  --text-2:        #475569;
+  --muted:         #94A3B8;
+  --font: -apple-system,BlinkMacSystemFont,"Segoe UI","Inter",Helvetica,sans-serif;
+  --r-lg:14px; --r:12px; --r-sm:8px; --r-xs:6px;
+  --sh:  0 1px 3px rgba(15,23,42,.06);
+  --sh2: 0 4px 14px rgba(15,23,42,.08);
+}
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.45}
+button,input,select{font-family:inherit}
+
+/* ═══════════════════════════════════════════
+   SHELL
+═══════════════════════════════════════════ */
+.shell{min-height:100vh;display:flex}
+.sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;position:sticky;top:0;max-height:100vh;overflow-y:auto}
+.s-brand{padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:8px;flex-shrink:0}
+.s-title{font-size:15px;font-weight:600;color:#fff;letter-spacing:-.01em}
+.s-sub{font-size:11px;color:#64748B;margin-top:2px}
+.s-group-lbl{font-size:10px;text-transform:uppercase;color:var(--sidebar-muted);letter-spacing:.08em;padding:10px 20px 5px;font-weight:600}
+.s-item{display:flex;align-items:center;gap:9px;padding:7px 12px;margin:0 8px;border-radius:var(--r-sm);color:var(--sidebar-text);font-size:12px;cursor:pointer;transition:background .15s;user-select:none;text-decoration:none}
+.s-item:hover{background:rgba(255,255,255,.05);color:#fff;text-decoration:none}
+.s-item.active{background:rgba(37,99,235,.16);color:#60A5FA}
+.s-item svg{width:14px;height:14px;stroke-width:1.7;flex-shrink:0;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+.s-num{margin-left:auto;font-size:10px;color:var(--sidebar-muted);font-weight:600}
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.topbar{padding:16px 28px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;position:sticky;top:0;z-index:10}
+.topbar-title{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+.topbar-pill{display:inline-flex;align-items:center;gap:5px;background:#F1F5F9;border-radius:20px;padding:3px 12px;font-size:11px;color:var(--text-2);font-weight:500}
+.content{padding:28px 32px;display:flex;flex-direction:column;gap:48px}
+
+/* ═══════════════════════════════════════════
+   SECTIONS
+═══════════════════════════════════════════ */
+.section{}
+.sec-lbl{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:9px;margin-bottom:22px}
+.section-title{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.02em;margin-bottom:6px}
+.section-desc{font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:22px;max-width:640px}
+
+/* ═══════════════════════════════════════════
+   DEMO BOX
+═══════════════════════════════════════════ */
+.demo{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.demo-canvas{padding:28px 24px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.demo-canvas.dark{background:var(--sidebar-bg);padding:24px}
+.demo-canvas.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.demo-canvas.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.demo-canvas.col{flex-direction:column}
+
+/* Code block */
+.code-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#F8FAFC;border-top:1px solid var(--border);cursor:pointer;user-select:none}
+.code-toggle-lbl{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.code-toggle-btn{font-size:11px;color:var(--brand);font-weight:600;background:none;border:none;cursor:pointer;padding:3px 8px;border-radius:4px;transition:background .15s}
+.code-toggle-btn:hover{background:var(--brand-soft)}
+.code-wrap{display:none;position:relative}
+.code-wrap.open{display:block}
+pre{background:#0F172A;color:#CBD5E1;font-size:12px;line-height:1.7;padding:20px 20px 20px 20px;overflow-x:auto;font-family:"SF Mono","Fira Code","Cascadia Code",Consolas,monospace;margin:0;tab-size:2}
+.copy-btn{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#94A3B8;font-size:11px;font-weight:600;border-radius:5px;padding:4px 10px;cursor:pointer;transition:all .15s;font-family:inherit}
+.copy-btn:hover{background:rgba(37,99,235,.25);border-color:rgba(37,99,235,.4);color:#60A5FA}
+.copy-btn.copied{color:#86EFAC;border-color:rgba(5,150,105,.4)}
+
+/* Syntax */
+.kw {color:#93C5FD}   /* keyword / property */
+.st {color:#FCD34D}   /* string / class */
+.vl {color:#86EFAC}   /* value */
+.cm {color:#475569;font-style:italic}  /* comment */
+.pu {color:#CBD5E1}   /* punctuation */
+
+/* ═══════════════════════════════════════════
+   1. COLOR SWATCHES
+═══════════════════════════════════════════ */
+.color-group{display:flex;flex-direction:column;gap:4px}
+.color-group-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.swatch-row{display:flex;border-radius:var(--r-sm);overflow:hidden;height:44px}
+.swatch{flex:1;display:flex;align-items:center;justify-content:center}
+.swatch-meta{display:flex;gap:6px;margin-top:5px}
+.swatch-chip{flex:1;border-radius:var(--r-xs);padding:4px 8px;font-size:10px;font-weight:600;line-height:1.4;text-align:center}
+
+/* ═══════════════════════════════════════════
+   DS COMPONENTS (reutilizamos para demos)
+═══════════════════════════════════════════ */
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border);border-radius:var(--r-sm);background:#fff;font-size:12px;font-weight:500;color:var(--text-2);cursor:pointer;transition:background .15s,border-color .15s;white-space:nowrap}
+.btn:hover{background:#F8FAFC}
+.btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn.primary:hover{background:var(--brand-text)}
+.btn.danger{color:var(--red);border-color:#FCA5A5}
+.btn.danger:hover{background:var(--red-soft)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:#F1F5F9}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn svg{width:13px;height:13px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Inputs */
+.inp{width:100%;padding:8px 12px;border:1px solid #CBD5E1;border-radius:var(--r-sm);font-size:13px;background:#F8FAFC;color:var(--text);outline:none;font-family:inherit;transition:background .15s,border-color .15s}
+.inp:focus{background:#fff;border-color:var(--brand)}
+.inp-wrap{position:relative}
+.inp-pre{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:var(--muted);pointer-events:none}
+.inp-wrap .inp{padding-left:28px}
+.sf-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-sm);padding:9px 12px;color:#fff;font-size:13px;font-weight:500;font-family:inherit;outline:none;transition:border-color .15s,background .15s}
+.sf-input:focus{border-color:var(--brand);background:rgba(37,99,235,.08)}
+.sf-presets{display:flex;gap:5px;margin-top:8px}
+.sf-preset{flex:1;padding:6px 4px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:6px;color:#94A3B8;font-size:11px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.sf-preset:hover,.sf-preset.on{background:rgba(37,99,235,.18);border-color:var(--brand);color:#60A5FA}
+.sf-lbl{display:block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#94A3B8;margin-bottom:5px}
+.sf-hint{font-size:11px;color:#64748B;display:block;margin-bottom:7px;line-height:1.5}
+
+/* Panel */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:var(--sh)}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.panel-title{font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+.panel-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.panel-meta{font-size:11px;color:var(--text-2)}
+
+/* KPI */
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh);position:relative}
+.kpi-icon{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center}
+.kpi-icon svg{width:16px;height:16px;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.kpi-icon.blue{background:var(--brand-soft)} .kpi-icon.blue svg{stroke:var(--brand-text)}
+.kpi-icon.green{background:var(--green-soft)} .kpi-icon.green svg{stroke:var(--green-text)}
+.kpi-icon.amber{background:var(--amber-soft)} .kpi-icon.amber svg{stroke:var(--amber-text)}
+.kpi-icon.red{background:var(--red-soft)} .kpi-icon.red svg{stroke:var(--red-text)}
+.kpi-icon.purple{background:var(--purple-soft)} .kpi-icon.purple svg{stroke:var(--purple-text)}
+.kpi-icon.slate{background:#F1F5F9} .kpi-icon.slate svg{stroke:#475569}
+.kpi-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding-right:42px}
+.kpi-val{font-size:24px;font-weight:600;color:var(--text);margin-top:6px;letter-spacing:-.02em;line-height:1}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+.kpi-val.blue{color:var(--brand)} .kpi-val.green{color:var(--green)} .kpi-val.amber{color:var(--amber)} .kpi-val.red{color:var(--red)} .kpi-val.purple{color:var(--purple)}
+
+/* Pills */
+.pill{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.pill.blue{background:var(--brand-soft);color:var(--brand-text)}
+.pill.green{background:var(--green-soft);color:var(--green-text)}
+.pill.amber{background:var(--amber-soft);color:var(--amber-text)}
+.pill.red{background:var(--red-soft);color:var(--red-text)}
+.pill.purple{background:var(--purple-soft);color:var(--purple-text)}
+.pill.gray{background:#F1F5F9;color:#475569}
+
+/* Insights */
+.insight{border-left:3px solid;border-radius:var(--r-xs);padding:10px 14px;font-size:12px;line-height:1.6}
+.insight.info{background:#EFF6FF;border-color:var(--brand);color:#1E3A8A}
+.insight.ok{background:#ECFDF5;border-color:var(--green);color:#065F46}
+.insight.warn{background:#FFFBEB;border-color:var(--amber);color:#78350F}
+.insight.err{background:#FEF2F2;border-color:var(--red);color:#7F1D1D}
+.insight b{filter:brightness(.75)}
+
+/* Funnel */
+.funnel-row-demo{display:flex;align-items:stretch;gap:0}
+.funnel-card{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh)}
+.funnel-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.fc-brand::before{background:var(--brand)}
+.fc-slate::before{background:var(--border)}
+.fc-green::before{background:var(--green)}
+.fc-amber::before{background:var(--amber)}
+.fc-lbl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;padding-right:0}
+.fc-val{font-size:22px;font-weight:600;color:var(--text);line-height:1;letter-spacing:-.02em;margin-bottom:5px}
+.fc-val.brand{color:var(--brand)} .fc-val.green{color:var(--green)} .fc-val.amber{color:var(--amber)}
+.fc-ratio{display:inline-flex;align-items:center;gap:4px;background:#F1F5F9;border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:10px;font-weight:500;color:var(--text-2);margin-bottom:6px;width:fit-content}
+.fc-desc{font-size:11px;color:var(--text-2);line-height:1.5;flex:1}
+.funnel-arrow-demo{display:flex;align-items:center;padding:0 6px;color:var(--muted);font-size:16px;flex-shrink:0;align-self:center}
+
+/* Scenario */
+.sc-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.sc-col{padding:18px 20px;border-right:1px solid var(--border)}
+.sc-col:last-child{border-right:none}
+.sc-col.is-base{background:rgba(37,99,235,.025)}
+.sc-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+.sc-badge.base{background:var(--brand-soft);color:var(--brand-text)}
+.sc-badge.up{background:var(--green-soft);color:var(--green-text)}
+.sc-badge.down{background:var(--amber-soft);color:var(--amber-text)}
+.sc-ratio-lbl{font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:500}
+.sc-ratio-wrap{display:flex;align-items:baseline;gap:5px;margin-bottom:12px}
+.sc-big-num{font-size:26px;font-weight:600;letter-spacing:-.02em;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 10px;background:#fff;color:var(--text)}
+.sc-big-num.blue{border-color:var(--brand);color:var(--brand)}
+.sc-big-num.green{border-color:var(--green);color:var(--green)}
+.sc-big-num.amber{border-color:var(--amber);color:var(--amber)}
+.sc-pct{font-size:16px;font-weight:500;color:var(--muted)}
+.sc-rows{display:flex;flex-direction:column;gap:5px}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;background:#F8FAFC;border-radius:var(--r-sm)}
+.sc-row-lbl{font-size:11px;color:var(--text-2);font-weight:500}
+.sc-row-val{font-size:12px;font-weight:600;color:var(--text)}
+.sc-row-val.blue{color:var(--brand)} .sc-row-val.green{color:var(--green)} .sc-row-val.amber{color:var(--amber)}
+.sc-delta{font-size:11px;font-weight:500;margin-top:8px;padding:4px 10px;border-radius:20px;text-align:center}
+.sc-delta.up{background:var(--green-soft);color:var(--green-text)}
+.sc-delta.down{background:var(--amber-soft);color:var(--amber-text)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#F8FAFC;padding:9px 12px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid #F1F5F9;color:var(--text);font-weight:400}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFBFC}
+th.r,td.r{text-align:right}
+td.brand{color:var(--brand);font-weight:600}
+td.green{color:var(--green);font-weight:600}
+td.amber{color:var(--amber);font-weight:600}
+td.red{color:var(--red);font-weight:600}
+
+/* Typo tokens */
+.typo-row{display:flex;align-items:baseline;gap:16px;padding:10px 0;border-bottom:1px solid var(--border)}
+.typo-row:last-child{border-bottom:none}
+.typo-sample{color:var(--text);flex:1}
+.typo-meta{font-size:11px;color:var(--muted);white-space:nowrap;font-weight:500;font-family:"SF Mono","Cascadia Code",Consolas,monospace}
+
+/* Layout diagram */
+.layout-diagram{border:2px solid var(--border);border-radius:var(--r);overflow:hidden;font-size:11px;display:flex;height:180px}
+.ld-sidebar{width:80px;background:var(--sidebar-bg);color:#64748B;padding:10px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.ld-sidebar-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#334155;margin-bottom:4px}
+.ld-main{flex:1;display:flex;flex-direction:column}
+.ld-topbar{height:34px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 10px;font-size:9px;color:var(--muted);font-weight:600;gap:6px;flex-shrink:0}
+.ld-content{flex:1;background:var(--bg);padding:10px;font-size:9px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.ld-dot{width:5px;height:5px;border-radius:50%;background:var(--border)}
+
+/* Spacing tokens */
+.space-row{display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid var(--border)}
+.space-row:last-child{border-bottom:none}
+.space-bar{height:10px;background:var(--brand-soft);border-radius:2px;border:1px solid var(--brand-text)}
+.space-lbl{font-size:11px;font-weight:600;color:var(--text-2);width:60px;flex-shrink:0;font-family:"SF Mono","Cascadia Code",Consolas,monospace}
+.space-val{font-size:11px;color:var(--muted)}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:900px){
+  .shell{flex-direction:column}
+  .sidebar{width:100%;min-width:0;position:relative;max-height:none}
+  .content{padding:20px 18px}
+  .demo-canvas.grid2,.demo-canvas.grid3{grid-template-columns:1fr}
+  .sc-grid{grid-template-columns:1fr}
+  .funnel-row-demo{flex-wrap:wrap}
+  .funnel-arrow-demo{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ══ SIDEBAR ══════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="s-brand">
+    <div class="s-title">Design System</div>
+    <div class="s-sub">Lima Retail v1.0</div>
+  </div>
+
+  <div class="s-group-lbl">Fundamentos</div>
+  <a class="s-item active" href="#tokens">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
+    Tokens de color<span class="s-num">01</span>
+  </a>
+  <a class="s-item" href="#typo">
+    <svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+    Tipografía<span class="s-num">02</span>
+  </a>
+  <a class="s-item" href="#layout">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h6"/></svg>
+    Layout Shell<span class="s-num">03</span>
+  </a>
+
+  <div class="s-group-lbl">Componentes</div>
+  <a class="s-item" href="#buttons">
+    <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="10" rx="2"/></svg>
+    Botones<span class="s-num">04</span>
+  </a>
+  <a class="s-item" href="#forms">
+    <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="4" rx="1"/><rect x="3" y="14" width="18" height="4" rx="1"/></svg>
+    Formularios<span class="s-num">05</span>
+  </a>
+  <a class="s-item" href="#panels">
+    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M2 9h20"/></svg>
+    Panels<span class="s-num">06</span>
+  </a>
+  <a class="s-item" href="#kpi">
+    <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+    KPI Cards<span class="s-num">07</span>
+  </a>
+  <a class="s-item" href="#pills">
+    <svg viewBox="0 0 24 24"><rect x="2" y="8" width="20" height="8" rx="4"/></svg>
+    Pills / Badges<span class="s-num">08</span>
+  </a>
+  <a class="s-item" href="#insights">
+    <svg viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01"/><circle cx="12" cy="12" r="10"/></svg>
+    Insights<span class="s-num">09</span>
+  </a>
+  <a class="s-item" href="#funnel">
+    <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+    Funnel Cards<span class="s-num">10</span>
+  </a>
+  <a class="s-item" href="#scenarios">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    Simulación<span class="s-num">11</span>
+  </a>
+  <a class="s-item" href="#tables">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+    Tablas<span class="s-num">12</span>
+  </a>
+</aside>
+
+<!-- ══ MAIN ══════════════════════════════════════════ -->
+<main class="main" id="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Tokens de color</div>
+    <div class="topbar-pill">Lima Retail Design System</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ 01 TOKENS ══════════════════════════════ -->
+    <section class="section" id="tokens" data-label="Tokens de color">
+      <div class="sec-lbl">01 — Fundamentos</div>
+      <div class="section-title">Tokens de color</div>
+      <div class="section-desc">Cada color del sistema viene en tres variantes: el color base, la versión <em>soft</em> para fondos y la versión <em>text</em> oscurecida para tipografía. Todos los componentes usan estos tokens — nunca valores hex directos.</div>
+
+      <div class="demo">
+        <div class="demo-canvas col" style="gap:20px">
+
+          <!-- Superficie -->
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:10px">Superficies</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div style="text-align:center">
+                <div style="width:72px;height:40px;background:#0F172A;border-radius:var(--r-sm);border:1px solid var(--border)"></div>
+                <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:4px">--sidebar-bg</div>
+                <div style="font-size:9px;color:var(--muted)">#0F172A</div>
+              </div>
+              <div style="text-align:center">
+                <div style="width:72px;height:40px;background:#F3F4F6;border-radius:var(--r-sm);border:1px solid var(--border)"></div>
+                <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:4px">--bg</div>
+                <div style="font-size:9px;color:var(--muted)">#F3F4F6</div>
+              </div>
+              <div style="text-align:center">
+                <div style="width:72px;height:40px;background:#FFFFFF;border-radius:var(--r-sm);border:1px solid var(--border)"></div>
+                <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:4px">--card</div>
+                <div style="font-size:9px;color:var(--muted)">#FFFFFF</div>
+              </div>
+              <div style="text-align:center">
+                <div style="width:72px;height:40px;background:#E2E8F0;border-radius:var(--r-sm);border:1px solid var(--border)"></div>
+                <div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:4px">--border</div>
+                <div style="font-size:9px;color:var(--muted)">#E2E8F0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acentos -->
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:10px">Acentos — triplete color / soft / text</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+
+              <div class="color-group">
+                <div class="swatch-row">
+                  <div class="swatch" style="background:#2563EB"></div>
+                  <div class="swatch" style="background:#DBEAFE"></div>
+                  <div class="swatch" style="background:#1D4ED8"></div>
+                </div>
+                <div class="swatch-meta">
+                  <div class="swatch-chip" style="background:#2563EB;color:#fff">--brand<br>#2563EB</div>
+                  <div class="swatch-chip" style="background:#DBEAFE;color:#1D4ED8">--brand-soft<br>#DBEAFE</div>
+                  <div class="swatch-chip" style="background:#1D4ED8;color:#fff">--brand-text<br>#1D4ED8</div>
+                </div>
+              </div>
+
+              <div class="color-group">
+                <div class="swatch-row">
+                  <div class="swatch" style="background:#059669"></div>
+                  <div class="swatch" style="background:#D1FAE5"></div>
+                  <div class="swatch" style="background:#047857"></div>
+                </div>
+                <div class="swatch-meta">
+                  <div class="swatch-chip" style="background:#059669;color:#fff">--green<br>#059669</div>
+                  <div class="swatch-chip" style="background:#D1FAE5;color:#047857">--green-soft<br>#D1FAE5</div>
+                  <div class="swatch-chip" style="background:#047857;color:#fff">--green-text<br>#047857</div>
+                </div>
+              </div>
+
+              <div class="color-group">
+                <div class="swatch-row">
+                  <div class="swatch" style="background:#D97706"></div>
+                  <div class="swatch" style="background:#FEF3C7"></div>
+                  <div class="swatch" style="background:#B45309"></div>
+                </div>
+                <div class="swatch-meta">
+                  <div class="swatch-chip" style="background:#D97706;color:#fff">--amber<br>#D97706</div>
+                  <div class="swatch-chip" style="background:#FEF3C7;color:#B45309">--amber-soft<br>#FEF3C7</div>
+                  <div class="swatch-chip" style="background:#B45309;color:#fff">--amber-text<br>#B45309</div>
+                </div>
+              </div>
+
+              <div class="color-group">
+                <div class="swatch-row">
+                  <div class="swatch" style="background:#DC2626"></div>
+                  <div class="swatch" style="background:#FEE2E2"></div>
+                  <div class="swatch" style="background:#B91C1C"></div>
+                </div>
+                <div class="swatch-meta">
+                  <div class="swatch-chip" style="background:#DC2626;color:#fff">--red<br>#DC2626</div>
+                  <div class="swatch-chip" style="background:#FEE2E2;color:#B91C1C">--red-soft<br>#FEE2E2</div>
+                  <div class="swatch-chip" style="background:#B91C1C;color:#fff">--red-text<br>#B91C1C</div>
+                </div>
+              </div>
+
+              <div class="color-group">
+                <div class="swatch-row">
+                  <div class="swatch" style="background:#7C3AED"></div>
+                  <div class="swatch" style="background:#EDE9FE"></div>
+                  <div class="swatch" style="background:#6D28D9"></div>
+                </div>
+                <div class="swatch-meta">
+                  <div class="swatch-chip" style="background:#7C3AED;color:#fff">--purple<br>#7C3AED</div>
+                  <div class="swatch-chip" style="background:#EDE9FE;color:#6D28D9">--purple-soft<br>#EDE9FE</div>
+                  <div class="swatch-chip" style="background:#6D28D9;color:#fff">--purple-text<br>#6D28D9</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Texto -->
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:10px">Texto</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div style="text-align:center"><div style="width:72px;height:40px;background:#0F172A;border-radius:var(--r-sm)"></div><div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:4px">--text</div></div>
+              <div style="text-align:center"><div style="width:72px;height:40px;background:#475569;border-radius:var(--r-sm)"></div><div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:4px">--text-2</div></div>
+              <div style="text-align:center"><div style="width:72px;height:40px;background:#94A3B8;border-radius:var(--r-sm)"></div><div style="font-size:9px;font-weight:600;color:var(--muted);margin-top:4px">--muted</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            CSS
+          </span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="cm">/* Tokens — pegar en :root */</span>
+<span class="kw">--brand</span><span class="pu">:</span>        <span class="vl">#2563EB</span><span class="pu">;</span>  <span class="kw">--brand-soft</span><span class="pu">:</span>  <span class="vl">#DBEAFE</span><span class="pu">;</span>  <span class="kw">--brand-text</span><span class="pu">:</span>  <span class="vl">#1D4ED8</span><span class="pu">;</span>
+<span class="kw">--green</span><span class="pu">:</span>        <span class="vl">#059669</span><span class="pu">;</span>  <span class="kw">--green-soft</span><span class="pu">:</span>  <span class="vl">#D1FAE5</span><span class="pu">;</span>  <span class="kw">--green-text</span><span class="pu">:</span>  <span class="vl">#047857</span><span class="pu">;</span>
+<span class="kw">--amber</span><span class="pu">:</span>        <span class="vl">#D97706</span><span class="pu">;</span>  <span class="kw">--amber-soft</span><span class="pu">:</span>  <span class="vl">#FEF3C7</span><span class="pu">;</span>  <span class="kw">--amber-text</span><span class="pu">:</span>  <span class="vl">#B45309</span><span class="pu">;</span>
+<span class="kw">--red</span><span class="pu">:</span>          <span class="vl">#DC2626</span><span class="pu">;</span>  <span class="kw">--red-soft</span><span class="pu">:</span>    <span class="vl">#FEE2E2</span><span class="pu">;</span>  <span class="kw">--red-text</span><span class="pu">:</span>    <span class="vl">#B91C1C</span><span class="pu">;</span>
+<span class="kw">--purple</span><span class="pu">:</span>       <span class="vl">#7C3AED</span><span class="pu">;</span>  <span class="kw">--purple-soft</span><span class="pu">:</span> <span class="vl">#EDE9FE</span><span class="pu">;</span>  <span class="kw">--purple-text</span><span class="pu">:</span> <span class="vl">#6D28D9</span><span class="pu">;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 02 TIPOGRAFÍA ══════════════════════════ -->
+    <section class="section" id="typo" data-label="Tipografía">
+      <div class="sec-lbl">02 — Fundamentos</div>
+      <div class="section-title">Tipografía</div>
+      <div class="section-desc">Sistema tipográfico sin dependencias externas. Pesos limitados a 400, 500 y 600 — nunca 700 o superior para mantener sobriedad. Tamaño base 13px.</div>
+
+      <div class="demo">
+        <div class="demo-canvas col" style="gap:0;padding:0 24px">
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:22px;font-weight:600;letter-spacing:-.02em">Título de herramienta</div>
+            <div class="typo-meta">22px / 600 / -.02em</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:17px;font-weight:600;letter-spacing:-.01em">Topbar title</div>
+            <div class="typo-meta">17px / 600 / -.01em</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:15px;font-weight:600;letter-spacing:-.01em">Sidebar brand</div>
+            <div class="typo-meta">15px / 600 / -.01em</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:14px;font-weight:600;letter-spacing:-.01em">Panel title</div>
+            <div class="typo-meta">14px / 600 / -.01em</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:24px;font-weight:600;letter-spacing:-.02em;color:var(--brand)">S/4,030</div>
+            <div class="typo-meta">24px / 600 — KPI value</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:13px;font-weight:500">Cuerpo de texto medio</div>
+            <div class="typo-meta">13px / 500</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:13px;font-weight:400;color:var(--text-2)">Descripción o texto de apoyo</div>
+            <div class="typo-meta">13px / 400 / text-2</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:12px;font-weight:400;color:var(--text-2)">Subtítulo, hint, descripción secundaria</div>
+            <div class="typo-meta">12px / 400 / text-2</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:11px;font-weight:500;color:var(--muted)">Metadata, timestamps, topbar-sub</div>
+            <div class="typo-meta">11px / 500 / muted</div>
+          </div>
+          <div class="typo-row">
+            <div class="typo-sample" style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">SEC-LBL / LABEL / KPI-LBL</div>
+            <div class="typo-meta">10px / 600 / uppercase</div>
+          </div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>CSS</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="kw">--font</span><span class="pu">:</span> <span class="vl">-apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Helvetica, sans-serif</span><span class="pu">;</span>
+
+<span class="cm">/* Pesos permitidos: 400 · 500 · 600 — nunca 700+ */</span>
+<span class="st">.panel-title</span>  <span class="pu">{</span> <span class="kw">font-size</span><span class="pu">:</span> <span class="vl">14px</span><span class="pu">;</span> <span class="kw">font-weight</span><span class="pu">:</span> <span class="vl">600</span><span class="pu">;</span> <span class="kw">letter-spacing</span><span class="pu">:</span> <span class="vl">-.01em</span><span class="pu">;</span> <span class="pu">}</span>
+<span class="st">.kpi-val</span>       <span class="pu">{</span> <span class="kw">font-size</span><span class="pu">:</span> <span class="vl">24px</span><span class="pu">;</span> <span class="kw">font-weight</span><span class="pu">:</span> <span class="vl">600</span><span class="pu">;</span> <span class="kw">letter-spacing</span><span class="pu">:</span> <span class="vl">-.02em</span><span class="pu">;</span> <span class="pu">}</span>
+<span class="st">.kpi-lbl</span>       <span class="pu">{</span> <span class="kw">font-size</span><span class="pu">:</span> <span class="vl">10px</span><span class="pu">;</span> <span class="kw">font-weight</span><span class="pu">:</span> <span class="vl">600</span><span class="pu">;</span> <span class="kw">text-transform</span><span class="pu">:</span> <span class="vl">uppercase</span><span class="pu">;</span> <span class="kw">letter-spacing</span><span class="pu">:</span> <span class="vl">.07em</span><span class="pu">;</span> <span class="pu">}</span>
+<span class="st">.sec-lbl</span>       <span class="pu">{</span> <span class="kw">font-size</span><span class="pu">:</span> <span class="vl">10px</span><span class="pu">;</span> <span class="kw">font-weight</span><span class="pu">:</span> <span class="vl">600</span><span class="pu">;</span> <span class="kw">letter-spacing</span><span class="pu">:</span> <span class="vl">.09em</span><span class="pu">;</span> <span class="kw">text-transform</span><span class="pu">:</span> <span class="vl">uppercase</span><span class="pu">;</span> <span class="pu">}</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 03 LAYOUT ══════════════════════════════ -->
+    <section class="section" id="layout" data-label="Layout Shell">
+      <div class="sec-lbl">03 — Fundamentos</div>
+      <div class="section-title">Layout Shell</div>
+      <div class="section-desc">Estructura de dos columnas: sidebar oscuro fijo (240px) + área principal. El topbar blanco es sticky dentro del main y separa la navegación del contenido.</div>
+
+      <div class="demo">
+        <div class="demo-canvas">
+          <div style="width:100%">
+            <div class="layout-diagram">
+              <div class="ld-sidebar">
+                <div class="ld-sidebar-label">sidebar<br>240px</div>
+                <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px">
+                  <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px"></div>
+                  <div style="height:6px;background:rgba(37,99,235,.25);border-radius:3px"></div>
+                  <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px"></div>
+                  <div style="height:6px;background:rgba(255,255,255,.08);border-radius:3px"></div>
+                </div>
+              </div>
+              <div class="ld-main">
+                <div class="ld-topbar">
+                  <div class="ld-dot"></div><div class="ld-dot"></div>
+                  <span style="margin-left:4px">topbar · background: #fff · border-bottom</span>
+                </div>
+                <div class="ld-content">
+                  .content · padding: 22px 28px · flex-direction: column · gap: 22px
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:24px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div class="space-row"><div class="space-lbl">--r-lg</div><div class="space-bar" style="width:28px"></div><div class="space-val">14px — modales</div></div>
+                <div class="space-row"><div class="space-lbl">--r</div><div class="space-bar" style="width:24px"></div><div class="space-val">12px — cards, panels</div></div>
+                <div class="space-row"><div class="space-lbl">--r-sm</div><div class="space-bar" style="width:16px"></div><div class="space-val">8px — botones, inputs</div></div>
+                <div class="space-row"><div class="space-lbl">--r-xs</div><div class="space-bar" style="width:12px"></div><div class="space-val">6px — chips, badges</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">shell</span><span class="pu">"&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">aside</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sidebar</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">s-brand</span><span class="pu">"&gt;</span>
+      <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">s-title</span><span class="pu">"&gt;</span>Nombre de la herramienta<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+      <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">s-sub</span><span class="pu">"&gt;</span>Agencia Lima Retail<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="cm">&lt;!-- .s-item para navegación --&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">aside</span><span class="pu">&gt;</span>
+
+  <span class="pu">&lt;</span><span class="kw">main</span> <span class="st">class</span><span class="pu">="</span><span class="vl">main</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">topbar</span><span class="pu">"&gt;</span>
+      <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">topbar-title</span><span class="pu">"&gt;</span>Título de sección<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">content</span><span class="pu">"&gt;</span>
+      <span class="cm">&lt;!-- contenido --&gt;</span>
+    <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">main</span><span class="pu">&gt;</span>
+<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 04 BOTONES ══════════════════════════════ -->
+    <section class="section" id="buttons" data-label="Botones">
+      <div class="sec-lbl">04 — Componentes</div>
+      <div class="section-title">Botones</div>
+      <div class="section-desc">Cuatro variantes. El botón primario usa <code>--brand</code>. Nunca usar <code>font-weight: 700</code>. Los iconos SVG son opcionales y van al inicio.</div>
+
+      <div class="demo">
+        <div class="demo-canvas" style="gap:8px;align-items:center">
+          <button class="btn">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Default
+          </button>
+          <button class="btn primary">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Primary
+          </button>
+          <button class="btn danger">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            Danger
+          </button>
+          <button class="btn ghost">Ghost</button>
+          <button class="btn" disabled>Disabled</button>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">btn</span><span class="pu">"&gt;</span>Default<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">btn primary</span><span class="pu">"&gt;</span>Primary<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">btn danger</span><span class="pu">"&gt;</span>Danger<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">btn ghost</span><span class="pu">"&gt;</span>Ghost<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">btn</span><span class="pu">"</span> <span class="st">disabled</span><span class="pu">&gt;</span>Disabled<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 05 FORMULARIOS ══════════════════════════ -->
+    <section class="section" id="forms" data-label="Formularios">
+      <div class="sec-lbl">05 — Componentes</div>
+      <div class="section-title">Formularios</div>
+      <div class="section-desc">Dos contextos: inputs sobre fondo claro (app) e inputs sobre fondo oscuro (sidebar). Los presets son botones pill que actualizan el valor del input.</div>
+
+      <div class="demo">
+        <div class="demo-canvas grid2" style="align-items:start">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:2px">Input claro (app)</div>
+            <div>
+              <label style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:5px">Ticket promedio</label>
+              <input class="inp" type="number" value="157.42" placeholder="0.00"/>
+            </div>
+            <div>
+              <label style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:5px">Con prefijo</label>
+              <div class="inp-wrap">
+                <span class="inp-pre">S/</span>
+                <input class="inp" type="number" value="800" placeholder="0"/>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--sidebar-bg);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#64748B;margin-bottom:2px">Input oscuro (sidebar)</div>
+            <div>
+              <label class="sf-lbl">CPL</label>
+              <span class="sf-hint">Costo por conversación</span>
+              <input class="sf-input" type="number" value="3"/>
+              <div class="sf-presets">
+                <button class="sf-preset on">S/3</button>
+                <button class="sf-preset">S/5</button>
+                <button class="sf-preset">S/10</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="cm">&lt;!-- Input claro --&gt;</span>
+<span class="pu">&lt;</span><span class="kw">input</span> <span class="st">class</span><span class="pu">="</span><span class="vl">inp</span><span class="pu">"</span> <span class="st">type</span><span class="pu">="</span><span class="vl">number</span><span class="pu">"</span> <span class="st">placeholder</span><span class="pu">="</span><span class="vl">0.00</span><span class="pu">" /&gt;</span>
+
+<span class="cm">&lt;!-- Con prefijo S/ --&gt;</span>
+<span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">inp-wrap</span><span class="pu">"&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">span</span> <span class="st">class</span><span class="pu">="</span><span class="vl">inp-pre</span><span class="pu">"&gt;</span>S/<span class="pu">&lt;/</span><span class="kw">span</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">input</span> <span class="st">class</span><span class="pu">="</span><span class="vl">inp</span><span class="pu">"</span> <span class="st">type</span><span class="pu">="</span><span class="vl">number</span><span class="pu">" /&gt;</span>
+<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+<span class="cm">&lt;!-- Input oscuro (sidebar) con presets --&gt;</span>
+<span class="pu">&lt;</span><span class="kw">label</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sf-lbl</span><span class="pu">"&gt;</span>CPL<span class="pu">&lt;/</span><span class="kw">label</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">input</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sf-input</span><span class="pu">"</span> <span class="st">type</span><span class="pu">="</span><span class="vl">number</span><span class="pu">" /&gt;</span>
+<span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sf-presets</span><span class="pu">"&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sf-preset on</span><span class="pu">"&gt;</span>S/3<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sf-preset</span><span class="pu">"&gt;</span>S/5<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span>
+<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 06 PANELS ══════════════════════════════ -->
+    <section class="section" id="panels" data-label="Panels">
+      <div class="sec-lbl">06 — Componentes</div>
+      <div class="section-title">Panels</div>
+      <div class="section-desc">Contenedor genérico de sección. Siempre tiene fondo blanco, borde y sombra suave. El <code>panel-head</code> separa título de acciones.</div>
+
+      <div class="demo">
+        <div class="demo-canvas">
+          <div class="panel" style="width:100%">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Top productos por ingreso</div>
+                <div class="panel-sub">Enero – Marzo 2026</div>
+              </div>
+              <button class="btn">Exportar</button>
+            </div>
+            <div style="font-size:12px;color:var(--muted)">Aquí va el contenido del panel…</div>
+          </div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">panel</span><span class="pu">"&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">panel-head</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span><span class="pu">&gt;</span>
+      <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">panel-title</span><span class="pu">"&gt;</span>Título del panel<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+      <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">panel-sub</span><span class="pu">"&gt;</span>Subtítulo o rango de fechas<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">button</span> <span class="st">class</span><span class="pu">="</span><span class="vl">btn</span><span class="pu">"&gt;</span>Acción<span class="pu">&lt;/</span><span class="kw">button</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="cm">&lt;!-- contenido --&gt;</span>
+<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 07 KPI CARDS ══════════════════════════ -->
+    <section class="section" id="kpi" data-label="KPI Cards">
+      <div class="sec-lbl">07 — Componentes</div>
+      <div class="section-title">KPI Cards</div>
+      <div class="section-desc">Tarjeta de métrica con ícono posicionado arriba a la derecha. Seis variantes de color para el ícono. El valor usa <code>font-size: 24px</code>.</div>
+
+      <div class="demo">
+        <div class="demo-canvas grid3">
+          <div class="kpi-card">
+            <div class="kpi-icon blue"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+            <div class="kpi-lbl">Ingresos</div>
+            <div class="kpi-val blue">S/32,708</div>
+            <div class="kpi-sub">139 pedidos</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon green"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg></div>
+            <div class="kpi-lbl">Conversiones</div>
+            <div class="kpi-val green">85</div>
+            <div class="kpi-sub">40% de conv. reales</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon amber"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
+            <div class="kpi-lbl">Ticket promedio</div>
+            <div class="kpi-val amber">S/235</div>
+            <div class="kpi-sub">1.91 líneas/pedido</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon red"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <div class="kpi-lbl">En riesgo</div>
+            <div class="kpi-val red">265</div>
+            <div class="kpi-sub">clientes inactivos</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon purple"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="kpi-lbl">Clientes activos</div>
+            <div class="kpi-val purple">1,175</div>
+            <div class="kpi-sub">312 recurrentes</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-icon slate"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+            <div class="kpi-lbl">Días con ventas</div>
+            <div class="kpi-val">64</div>
+            <div class="kpi-sub">de 105 días</div>
+          </div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">kpi-card</span><span class="pu">"&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">kpi-icon blue</span><span class="pu">"&gt;</span><span class="cm">&lt;!-- svg --&gt;</span><span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">kpi-lbl</span><span class="pu">"&gt;</span>Label métrica<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">kpi-val blue</span><span class="pu">"&gt;</span>S/32,708<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">kpi-sub</span><span class="pu">"&gt;</span>Subtexto explicativo<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+<span class="cm">/* Variantes del ícono: blue · green · amber · red · purple · slate */</span>
+<span class="cm">/* Variantes del valor: .blue .green .amber .red .purple (o sin clase para --text) */</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 08 PILLS ═══════════════════════════════ -->
+    <section class="section" id="pills" data-label="Pills / Badges">
+      <div class="sec-lbl">08 — Componentes</div>
+      <div class="section-title">Pills / Badges</div>
+      <div class="section-desc">Etiquetas compactas para estados, categorías y metadata. Usan siempre el par <code>*-soft / *-text</code> del color correspondiente.</div>
+
+      <div class="demo">
+        <div class="demo-canvas" style="gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="pill blue">Activo</span>
+          <span class="pill green">Completado</span>
+          <span class="pill amber">En proceso</span>
+          <span class="pill red">Cancelado</span>
+          <span class="pill purple">Premium</span>
+          <span class="pill gray">Borrador</span>
+          <span class="pill blue"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Verificado</span>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">span</span> <span class="st">class</span><span class="pu">="</span><span class="vl">pill blue</span><span class="pu">"&gt;</span>Activo<span class="pu">&lt;/</span><span class="kw">span</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">span</span> <span class="st">class</span><span class="pu">="</span><span class="vl">pill green</span><span class="pu">"&gt;</span>Completado<span class="pu">&lt;/</span><span class="kw">span</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">span</span> <span class="st">class</span><span class="pu">="</span><span class="vl">pill amber</span><span class="pu">"&gt;</span>En proceso<span class="pu">&lt;/</span><span class="kw">span</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">span</span> <span class="st">class</span><span class="pu">="</span><span class="vl">pill red</span><span class="pu">"&gt;</span>Cancelado<span class="pu">&lt;/</span><span class="kw">span</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">span</span> <span class="st">class</span><span class="pu">="</span><span class="vl">pill purple</span><span class="pu">"&gt;</span>Premium<span class="pu">&lt;/</span><span class="kw">span</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">span</span> <span class="st">class</span><span class="pu">="</span><span class="vl">pill gray</span><span class="pu">"&gt;</span>Borrador<span class="pu">&lt;/</span><span class="kw">span</span><span class="pu">&gt;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 09 INSIGHTS ══════════════════════════════ -->
+    <section class="section" id="insights" data-label="Insights">
+      <div class="sec-lbl">09 — Componentes</div>
+      <div class="section-title">Insight Boxes</div>
+      <div class="section-desc">Alertas con borde lateral de color. Cuatro variantes: informativa, positiva, advertencia y error. Apilables, separadas por <code>margin-top: 8px</code>.</div>
+
+      <div class="demo">
+        <div class="demo-canvas col" style="gap:8px">
+          <div class="insight info"><b>Información:</b> El archivo fue procesado correctamente con 266 líneas de venta.</div>
+          <div class="insight ok"><b>Éxito:</b> La proyección muestra un ROI positivo de 403.7% sobre la inversión.</div>
+          <div class="insight warn"><b>Atención:</b> El CPL seleccionado es alto — considera optimizar la segmentación.</div>
+          <div class="insight err"><b>Error:</b> No se pudo cargar el archivo. Verifica el formato e inténtalo de nuevo.</div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">insight info</span><span class="pu">"&gt;&lt;</span><span class="kw">b</span><span class="pu">&gt;</span>Información:<span class="pu">&lt;/</span><span class="kw">b</span><span class="pu">&gt;</span> Texto…<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">insight ok</span><span class="pu">"&gt;&lt;</span><span class="kw">b</span><span class="pu">&gt;</span>Éxito:<span class="pu">&lt;/</span><span class="kw">b</span><span class="pu">&gt;</span> Texto…<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">insight warn</span><span class="pu">"&gt;&lt;</span><span class="kw">b</span><span class="pu">&gt;</span>Atención:<span class="pu">&lt;/</span><span class="kw">b</span><span class="pu">&gt;</span> Texto…<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+<span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">insight err</span><span class="pu">"&gt;&lt;</span><span class="kw">b</span><span class="pu">&gt;</span>Error:<span class="pu">&lt;/</span><span class="kw">b</span><span class="pu">&gt;</span> Texto…<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 10 FUNNEL ═══════════════════════════════ -->
+    <section class="section" id="funnel" data-label="Funnel Cards">
+      <div class="sec-lbl">10 — Componentes</div>
+      <div class="section-title">Funnel Cards</div>
+      <div class="section-desc">Tarjetas de embudo conectadas con flechas. La barra de 3px en la parte superior marca el color semántico de cada etapa. Variante <code>fc-brand</code> para inicio y fin del embudo.</div>
+
+      <div class="demo">
+        <div class="demo-canvas" style="padding:20px 16px">
+          <div class="funnel-row-demo" style="width:100%">
+            <div class="funnel-card fc-brand">
+              <div class="fc-lbl">Inversión Total</div>
+              <div class="fc-val brand">S/800</div>
+              <div class="fc-desc">Presupuesto total asignado a la campaña.</div>
+            </div>
+            <div class="funnel-arrow-demo">→</div>
+            <div class="funnel-card fc-slate">
+              <div class="fc-lbl">Total Leads</div>
+              <div class="fc-val">267</div>
+              <div class="fc-ratio">CPL S/3.00</div>
+              <div class="fc-desc">Inversión dividida entre el costo por conversación.</div>
+            </div>
+            <div class="funnel-arrow-demo">→</div>
+            <div class="funnel-card fc-slate">
+              <div class="fc-lbl">Posibles Clientes</div>
+              <div class="fc-val">85</div>
+              <div class="fc-ratio">40% de conv.</div>
+              <div class="fc-desc">Leads con intención real de compra.</div>
+            </div>
+            <div class="funnel-arrow-demo">→</div>
+            <div class="funnel-card fc-brand">
+              <div class="fc-lbl">Facturación</div>
+              <div class="fc-val brand">S/4,030</div>
+              <div class="fc-ratio" style="color:var(--brand)">ROI ▲ 403%</div>
+              <div class="fc-desc">Ingresos proyectados totales.</div>
+            </div>
+          </div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">funnel-row</span><span class="pu">"&gt;</span>
+
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">funnel-card fc-brand</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">fc-lbl</span><span class="pu">"&gt;</span>Inversión Total<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">fc-val brand</span><span class="pu">"&gt;</span>S/800<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">fc-desc</span><span class="pu">"&gt;</span>Descripción…<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">funnel-arrow</span><span class="pu">"&gt;</span>→<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">funnel-card fc-slate</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">fc-lbl</span><span class="pu">"&gt;</span>Total Leads<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">fc-val</span><span class="pu">"&gt;</span>267<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">fc-ratio</span><span class="pu">"&gt;</span>CPL S/3.00<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">fc-desc</span><span class="pu">"&gt;</span>Descripción…<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+<span class="cm">/* Modificadores: fc-brand · fc-slate · fc-green · fc-amber · fc-red */</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 11 SIMULACIÓN ══════════════════════════ -->
+    <section class="section" id="scenarios" data-label="Simulación">
+      <div class="sec-lbl">11 — Componentes</div>
+      <div class="section-title">Simulación de escenarios</div>
+      <div class="section-desc">Bloque de tres columnas para comparar escenarios: <strong>Actual</strong> (azul), <strong>+X%</strong> (verde) y <strong>−X%</strong> (ámbar). Los inputs numéricos grandes son editables por el usuario.</div>
+
+      <div class="demo">
+        <div class="sc-grid">
+          <div class="sc-col is-base">
+            <div class="sc-badge base">Escenario Actual</div>
+            <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
+            <div class="sc-ratio-wrap">
+              <div class="sc-big-num blue">40</div>
+              <div class="sc-pct">%</div>
+            </div>
+            <div class="sc-rows">
+              <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val blue">213</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val blue">85</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Ventas</span><span class="sc-row-val blue">26</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val blue">S/4,030</span></div>
+            </div>
+          </div>
+          <div class="sc-col">
+            <div class="sc-badge up">+10% Conversión</div>
+            <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
+            <div class="sc-ratio-wrap">
+              <div class="sc-big-num green">44</div>
+              <div class="sc-pct">%</div>
+            </div>
+            <div class="sc-rows">
+              <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val green">213</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val green">94</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Ventas</span><span class="sc-row-val green">28</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val green">S/4,433</span></div>
+            </div>
+            <div class="sc-delta up">▲ +S/403 vs actual</div>
+          </div>
+          <div class="sc-col">
+            <div class="sc-badge down">−10% Conversión</div>
+            <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
+            <div class="sc-ratio-wrap">
+              <div class="sc-big-num amber">36</div>
+              <div class="sc-pct">%</div>
+            </div>
+            <div class="sc-rows">
+              <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val amber">213</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val amber">77</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Ventas</span><span class="sc-row-val amber">23</span></div>
+              <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val amber">S/3,627</span></div>
+            </div>
+            <div class="sc-delta down">▼ −S/403 vs actual</div>
+          </div>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-grid</span><span class="pu">"&gt;</span>
+
+  <span class="cm">&lt;!-- Actual --&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-col is-base</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-badge base</span><span class="pu">"&gt;</span>Escenario Actual<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="cm">&lt;!-- input editable + sc-rows --&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+  <span class="cm">&lt;!-- +X% --&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-col</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-badge up</span><span class="pu">"&gt;</span>+10% Conversión<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-delta up</span><span class="pu">"&gt;</span>▲ +S/403 vs actual<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+  <span class="cm">&lt;!-- -X% --&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-col</span><span class="pu">"&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-badge down</span><span class="pu">"&gt;</span>−10% Conversión<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">div</span> <span class="st">class</span><span class="pu">="</span><span class="vl">sc-delta down</span><span class="pu">"&gt;</span>▼ −S/403 vs actual<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span>
+
+<span class="pu">&lt;/</span><span class="kw">div</span><span class="pu">&gt;</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ 12 TABLAS ═══════════════════════════════ -->
+    <section class="section" id="tables" data-label="Tablas">
+      <div class="sec-lbl">12 — Componentes</div>
+      <div class="section-title">Tablas</div>
+      <div class="section-desc">Encabezados en 10px uppercase muted. Filas con hover sutil. Celdas con clase de color para valores semánticos. Siempre dentro de un <code>.panel</code> o <code>.demo</code>.</div>
+
+      <div class="demo">
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th class="r">Pedidos</th>
+                <th class="r">Ingresos</th>
+                <th class="r">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Crema hidratante SPF50</td>
+                <td>Skincare</td>
+                <td class="r">48</td>
+                <td class="r brand">S/4,320</td>
+                <td class="r"><span class="pill green">Activo</span></td>
+              </tr>
+              <tr>
+                <td>Sérum vitamina C</td>
+                <td>Tratamientos</td>
+                <td class="r">31</td>
+                <td class="r brand">S/2,790</td>
+                <td class="r"><span class="pill green">Activo</span></td>
+              </tr>
+              <tr>
+                <td>Tónico poros</td>
+                <td>Limpieza</td>
+                <td class="r">12</td>
+                <td class="r amber">S/840</td>
+                <td class="r"><span class="pill amber">Stock bajo</span></td>
+              </tr>
+              <tr>
+                <td>Mascarilla arcilla</td>
+                <td>Tratamientos</td>
+                <td class="r">0</td>
+                <td class="r red">S/0</td>
+                <td class="r"><span class="pill red">Agotado</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-toggle" onclick="toggleCode(this)">
+          <span class="code-toggle-lbl"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>HTML</span>
+          <button class="code-toggle-btn">Ver código</button>
+        </div>
+        <div class="code-wrap">
+          <button class="copy-btn" onclick="copyCode(this)">Copiar</button>
+          <pre><span class="pu">&lt;</span><span class="kw">table</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">thead</span><span class="pu">&gt;&lt;</span><span class="kw">tr</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">th</span><span class="pu">&gt;</span>Producto<span class="pu">&lt;/</span><span class="kw">th</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">th</span> <span class="st">class</span><span class="pu">="</span><span class="vl">r</span><span class="pu">"&gt;</span>Ingresos<span class="pu">&lt;/</span><span class="kw">th</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">tr</span><span class="pu">&gt;&lt;/</span><span class="kw">thead</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;</span><span class="kw">tbody</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;</span><span class="kw">tr</span><span class="pu">&gt;</span>
+      <span class="pu">&lt;</span><span class="kw">td</span><span class="pu">&gt;</span>Nombre<span class="pu">&lt;/</span><span class="kw">td</span><span class="pu">&gt;</span>
+      <span class="pu">&lt;</span><span class="kw">td</span> <span class="st">class</span><span class="pu">="</span><span class="vl">r brand</span><span class="pu">"&gt;</span>S/4,320<span class="pu">&lt;/</span><span class="kw">td</span><span class="pu">&gt;</span>
+    <span class="pu">&lt;/</span><span class="kw">tr</span><span class="pu">&gt;</span>
+  <span class="pu">&lt;/</span><span class="kw">tbody</span><span class="pu">&gt;</span>
+<span class="pu">&lt;/</span><span class="kw">table</span><span class="pu">&gt;</span>
+<span class="cm">/* Clases de celda: .r (right) · .c (center) · .brand .green .amber .red */</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--text)">Lima Retail Design System v1.0</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Archivo de referencia — no editar directamente. Actualizar el CSS maestro y redistribuir.</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <span class="pill gray">CSS: lima-retail-ds.css</span>
+        <span class="pill blue">GitHub: jorgeluis666</span>
+      </div>
+    </div>
+
+  </div><!-- /.content -->
+</main>
+</div>
+
+<script>
+/* ══ NAV ACTIVO POR SCROLL ══ */
+const sections = document.querySelectorAll('section[data-label]');
+const navLinks  = document.querySelectorAll('.s-item');
+const topbarTitle = document.getElementById('topbar-title');
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(a => {
+        const active = a.getAttribute('href') === '#' + id;
+        a.classList.toggle('active', active);
+        if (active) topbarTitle.textContent = e.target.dataset.label;
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => obs.observe(s));
+
+/* Scroll suave para todos los links del sidebar */
+navLinks.forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+/* ══ CODE TOGGLE ══ */
+function toggleCode(toggleEl) {
+  const wrap = toggleEl.nextElementSibling;
+  const btn  = toggleEl.querySelector('.code-toggle-btn');
+  const open = wrap.classList.toggle('open');
+  btn.textContent = open ? 'Ocultar' : 'Ver código';
+}
+
+/* ══ COPY ══ */
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>
