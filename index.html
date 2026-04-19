@@ -203,13 +203,73 @@
   .manychat-btn{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-family:var(--font);font-size:15px;font-weight:500;cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:background .15s}
   .manychat-btn:hover{background:#1aab52;text-decoration:none;color:#fff}
 
+  /* ══ Responsive ════════════════════════════════════════ */
+
+  /* Tablet (≤ 900px) */
   @media(max-width:900px){
-    .funnel-strip{flex-wrap:wrap}
-    .fc-mini{min-width:calc(50% - 1px);border-bottom:1px solid var(--border)}
-    .sc-grid{grid-template-columns:1fr}
+    /* Sidebar */
     .sidebar{width:100%;min-width:0}
     .layout{flex-direction:column}
     .topbar,.content{padding:16px 18px}
+
+    /* Funnel strip: 2 columnas */
+    .funnel-strip{flex-wrap:wrap}
+    .fc-mini{min-width:calc(33.33% - 1px);border-bottom:1px solid var(--border)}
+    .fc-mini:last-child{border-bottom:none}
+
+    /* Gráfico: apilar verticalmente (canvas arriba, KPIs abajo) */
+    .chart-layout{flex-direction:column}
+    .chart-left{
+      width:100%;border-right:none;
+      border-top:1px solid var(--border);
+      padding:16px 18px;
+      display:grid;grid-template-columns:1fr 1fr;gap:8px;
+      order:2
+    }
+    .chart-left > div:first-child{grid-column:1/-1}  /* label "Escenario explorado" */
+    .chart-ref{grid-column:1/-1}                      /* "Tu ratio actual" full width */
+    .chart-right{order:1;padding:16px 18px 0}
+    .chart-canvas-wrap{min-height:200px}
+
+    /* ManyChat CTA */
+    .manychat-cta{flex-direction:column;align-items:stretch;gap:12px}
+    .manychat-btn{justify-content:center;width:100%;text-align:center}
+  }
+
+  /* Móvil (≤ 600px) */
+  @media(max-width:600px){
+    /* Topbar: ocultar badge largo */
+    .topbar-sub{flex-wrap:wrap;gap:4px}
+
+    /* Funnel strip: 2 columnas ajustadas */
+    .fc-mini{min-width:calc(50% - 1px)}
+    .fc-value{font-size:20px}
+    .fc-label{font-size:10px}
+
+    /* Bloque de interpretación */
+    .interp-box{padding:14px 16px}
+    .interp-item{font-size:13px}
+
+    /* Gráfico: KPIs en 1 columna */
+    .chart-left{grid-template-columns:1fr}
+    .chart-ref{grid-column:auto}
+    .chart-slider-row{flex-wrap:wrap;gap:8px}
+    .chart-slider-lbl{width:100%}
+    .chart-slider-val{min-width:40px}
+    .chart-canvas-wrap{min-height:180px}
+
+    /* Header del chart: apilar */
+    .chart-header{flex-direction:column;align-items:flex-start;gap:8px}
+    .chart-badge{align-self:flex-start}
+
+    /* ManyChat */
+    .manychat-left{flex-direction:column;gap:8px}
+    .manychat-desc{font-size:13px}
+    .manychat-btn{font-size:14px;padding:12px 16px}
+
+    /* Export */
+    .exp-row{flex-direction:column;align-items:flex-start;gap:8px}
+    .btn-exp{width:100%;justify-content:center}
   }
 </style>
 </head>
@@ -807,7 +867,12 @@ function initChart(){
     drawChart(v);
   }
   slider.addEventListener('input',update);
-  window.addEventListener('resize',()=>drawChart(parseInt(slider.value)));
+  // Redraw on any resize (handles orientation change on mobile)
+  if(window.ResizeObserver){
+    new ResizeObserver(()=>drawChart(parseInt(slider.value))).observe(el('chart-canvas').parentElement);
+  } else {
+    window.addEventListener('resize',()=>drawChart(parseInt(slider.value)));
+  }
   // Sync ref label when sidebar r-prospect changes
   el('r-prospect').addEventListener('input',()=>{
     const v=parseFloat(el('r-prospect').value)||40;
