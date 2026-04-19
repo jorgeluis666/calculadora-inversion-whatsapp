@@ -202,8 +202,18 @@
   .chart-range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 6px rgba(37,99,235,.4);cursor:pointer;margin-top:-8px}
   .chart-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 6px rgba(37,99,235,.4);cursor:pointer}
   .chart-slider-val{font-size:17px;font-weight:600;color:var(--brand);min-width:48px;text-align:right}
-  .chart-canvas-wrap{flex:1;position:relative;min-height:260px}
+  .chart-canvas-wrap{position:relative;min-height:260px}
   #chart-canvas{display:block;width:100%}
+
+  /* Insight debajo del canvas */
+  .chart-insight{display:flex;align-items:flex-start;gap:12px;margin-top:18px;padding:16px 18px;background:#F8FAFC;border-radius:var(--r-sm);border-left:3px solid var(--brand)}
+  .chart-insight-icon{width:28px;height:28px;border-radius:7px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .chart-insight-icon svg{stroke:#1D4ED8}
+  .chart-insight-body{flex:1;min-width:0}
+  .chart-insight-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;letter-spacing:-.01em}
+  .chart-insight-text{font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:6px}
+  .chart-insight-text:last-child{margin-bottom:0}
+  .chart-insight-text strong{color:var(--text);font-weight:600}
 
   /* ══ ManyChat CTA ════════════════════════════════════════ */
   .manychat-cta{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;background:#F0F7FF;border-top:1px solid #DBEAFE;flex-wrap:wrap}
@@ -600,6 +610,19 @@
           <div class="chart-canvas-wrap">
             <canvas id="chart-canvas"></canvas>
           </div>
+
+          <!-- Insight de oportunidad -->
+          <div class="chart-insight">
+            <div class="chart-insight-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="chart-insight-body">
+              <div class="chart-insight-title">La oportunidad real no está en invertir más</div>
+              <p class="chart-insight-text">La verdadera palanca para aumentar tu facturación está en <strong>qué tan eficiente eres para aprovechar cada conversación que llega</strong>. Como muestra el gráfico, un pequeño aumento en el ratio de conversión genera un impacto desproporcionado en los ingresos — sin necesidad de incrementar tu presupuesto publicitario.</p>
+              <p class="chart-insight-text">Cada conversación sin seguimiento es una venta perdida. Automatizar ese seguimiento inicial con ManyChat convierte más contactos en clientes, multiplicando el retorno de la misma inversión.</p>
+            </div>
+          </div>
+
         </div>
 
       </div><!-- /.chart-layout -->
