@@ -182,12 +182,15 @@
   .chart-ref-desc{font-size:12px;color:var(--brand-text);margin-top:3px;line-height:1.4;opacity:.85}
 
   /* Slider (derecha) */
-  .chart-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .chart-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
   .chart-slider-lbl{font-size:13px;font-weight:500;color:var(--text-2);white-space:nowrap}
-  .chart-range{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--brand-soft);outline:none;cursor:pointer}
-  .chart-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--brand);border:2px solid #fff;box-shadow:0 1px 4px rgba(37,99,235,.3);cursor:pointer}
-  .chart-slider-val{font-size:17px;font-weight:600;color:var(--brand);min-width:44px;text-align:right}
-  .chart-canvas-wrap{flex:1;position:relative}
+  .chart-range{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:#CBD5E1;outline:none;cursor:pointer;transition:background .15s}
+  .chart-range::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#CBD5E1}
+  .chart-range::-moz-range-track{height:6px;border-radius:3px;background:#CBD5E1}
+  .chart-range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 6px rgba(37,99,235,.4);cursor:pointer;margin-top:-8px}
+  .chart-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--brand);border:3px solid #fff;box-shadow:0 2px 6px rgba(37,99,235,.4);cursor:pointer}
+  .chart-slider-val{font-size:17px;font-weight:600;color:var(--brand);min-width:48px;text-align:right}
+  .chart-canvas-wrap{flex:1;position:relative;min-height:260px}
   #chart-canvas{display:block;width:100%}
 
   /* ══ ManyChat CTA ════════════════════════════════════════ */
@@ -639,104 +642,151 @@ function init(){
   initChart();
 }
 /* ── Gráfico interactivo ─────────────────────────────── */
-function drawChart(sliderVal, refVal){
+function calcRev(pct){
+  if(!cur) return 0;
+  const{inv,cpl,rReal,rClose,ticket}=cur;
+  const leads=cpl>0?inv/cpl:0;
+  return leads*(rReal/100)*(pct/100)*(rClose/100)*ticket;
+}
+
+function drawChart(sliderVal,refVal){
   if(!cur) return;
-  const {inv,cpl,rReal,rClose,ticket} = cur;
-  if(refVal===undefined) refVal = parseFloat(el('r-prospect').value)||40;
+  if(refVal===undefined) refVal=parseFloat(el('r-prospect').value)||40;
+  sliderVal=Math.max(5,Math.min(95,sliderVal));
+  refVal   =Math.max(5,Math.min(95,refVal));
 
-  const canvas = el('chart-canvas');
-  const wrap   = canvas.parentElement;
-  const W = wrap.clientWidth||600;
-  const H = 240;
-  canvas.width  = W * devicePixelRatio;
-  canvas.height = H * devicePixelRatio;
-  canvas.style.width  = W+'px';
-  canvas.style.height = H+'px';
-  const ctx = canvas.getContext('2d');
-  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const canvas=el('chart-canvas');
+  const wrap=canvas.parentElement;
+  const W=Math.max(wrap.clientWidth||400,300);
+  const H=270;
+  canvas.width=W*devicePixelRatio; canvas.height=H*devicePixelRatio;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(devicePixelRatio,devicePixelRatio);
 
-  // Build curve data
+  // Curve data
   const pts=[];
-  for(let pct=5;pct<=95;pct+=2){
-    const leads=cpl>0?inv/cpl:0;
-    const reales=leads*(rReal/100);
-    const prosp=reales*(pct/100);
-    const v=prosp*(rClose/100);
-    pts.push({pct,rev:v*ticket});
-  }
+  for(let p=5;p<=95;p+=1) pts.push({pct:p,rev:calcRev(p)});
   const maxRev=Math.max(...pts.map(p=>p.rev),1);
-  const pad={t:20,r:20,b:44,l:64};
+  const pad={t:24,r:24,b:46,l:76};
   const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
-  const toX=pct=>(pad.l+((pct-5)/90)*cW);
-  const toY=rev=>(pad.t+cH*(1-rev/maxRev));
+  const toX=p=>pad.l+((p-5)/90)*cW;
+  const toY=r=>pad.t+cH*(1-r/maxRev);
 
-  // Grid
-  ctx.strokeStyle='#E2E8F0'; ctx.lineWidth=1;
-  [0,.25,.5,.75,1].forEach(f=>{
-    const y=pad.t+cH*(1-f);
-    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
-    ctx.fillStyle='#94A3B8';ctx.font=`11px system-ui`;ctx.textAlign='right';
-    ctx.fillText('S/'+fN(maxRev*f),pad.l-8,y+4);
-  });
+  const sRev=calcRev(sliderVal);
+  const rRev=calcRev(refVal);
+  const sx=toX(sliderVal), sy=toY(sRev);
+  const rx=toX(refVal),    ry=toY(rRev);
+  const diff=sRev-rRev;
+  const hasDiff=Math.abs(sliderVal-refVal)>0.5;
 
-  // Area fill
+  /* ── Fondo área ── */
   ctx.beginPath();
   ctx.moveTo(toX(pts[0].pct),pad.t+cH);
   pts.forEach(p=>ctx.lineTo(toX(p.pct),toY(p.rev)));
   ctx.lineTo(toX(pts[pts.length-1].pct),pad.t+cH);
   ctx.closePath();
   const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,'rgba(37,99,235,.15)');grad.addColorStop(1,'rgba(37,99,235,.01)');
-  ctx.fillStyle=grad;ctx.fill();
+  grad.addColorStop(0,'rgba(37,99,235,.12)');grad.addColorStop(1,'rgba(37,99,235,.01)');
+  ctx.fillStyle=grad; ctx.fill();
 
-  // Curve line
+  /* ── Línea curva ── */
   ctx.beginPath();ctx.strokeStyle='#2563EB';ctx.lineWidth=2.5;ctx.lineJoin='round';
   pts.forEach((p,i)=>i===0?ctx.moveTo(toX(p.pct),toY(p.rev)):ctx.lineTo(toX(p.pct),toY(p.rev)));
   ctx.stroke();
 
-  // ── Línea referencial (valor del panel izquierdo) ──
-  const rx=toX(Math.max(5,Math.min(95,refVal)));
-  const rLeads=cpl>0?inv/cpl:0;
-  const rProsp=rLeads*(rReal/100)*(refVal/100);
-  const rRev=rProsp*(rClose/100)*ticket;
-  const ry=toY(rRev);
+  /* ── Grid Y ── */
+  [0,.25,.5,.75,1].forEach(f=>{
+    const y=pad.t+cH*(1-f);
+    ctx.strokeStyle='#E2E8F0';ctx.lineWidth=1;ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
+    ctx.fillStyle='#94A3B8';ctx.font='11px system-ui';ctx.textAlign='right';
+    ctx.fillText('S/'+fN(maxRev*f),pad.l-8,y+4);
+  });
+
+  /* ── Referencia gris (ratio actual del panel) ── */
+  // Vertical
   ctx.setLineDash([5,4]);ctx.strokeStyle='#94A3B8';ctx.lineWidth=1.5;
   ctx.beginPath();ctx.moveTo(rx,pad.t);ctx.lineTo(rx,pad.t+cH);ctx.stroke();
+  // Horizontal hacia eje Y
+  ctx.beginPath();ctx.moveTo(pad.l,ry);ctx.lineTo(rx,ry);ctx.stroke();
   ctx.setLineDash([]);
-  // etiqueta "Tu ratio actual"
-  const labelW=90, labelH=18, labelX=rx-labelW/2, labelY=pad.t+4;
-  ctx.fillStyle='rgba(148,163,184,.15)';
-  ctx.beginPath();ctx.roundRect(labelX,labelY,labelW,labelH,4);ctx.fill();
-  ctx.fillStyle='#64748B';ctx.font='bold 10px system-ui';ctx.textAlign='center';
-  ctx.fillText('Tu ratio actual: '+refVal+'%',rx,labelY+12);
-  // dot gris
+  // Valor en eje Y (gris)
+  const ryLabel='S/'+fN(rRev);
+  ctx.font='bold 11px system-ui';ctx.textAlign='right';ctx.fillStyle='#64748B';
+  ctx.fillText(ryLabel,pad.l-6,ry+4);
+  // Etiqueta superior "Tu ratio actual"
+  const tw=ctx.measureText('Tu ratio actual: '+refVal+'%').width+14;
+  const tlx=Math.min(Math.max(rx-tw/2,2),W-tw-2);
+  ctx.fillStyle='#F1F5F9';
+  ctx.beginPath();ctx.roundRect(tlx,pad.t-1,tw,18,4);ctx.fill();
+  ctx.fillStyle='#475569';ctx.font='bold 10px system-ui';ctx.textAlign='center';
+  ctx.fillText('Tu ratio actual: '+refVal+'%',tlx+tw/2,pad.t+12);
+  // Punto gris
   ctx.beginPath();ctx.arc(rx,ry,5,0,Math.PI*2);ctx.fillStyle='#94A3B8';ctx.fill();
   ctx.beginPath();ctx.arc(rx,ry,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  // X label gris
+  ctx.fillStyle='#64748B';ctx.font='bold 11px system-ui';ctx.textAlign='center';
+  ctx.fillText(refVal+'%',rx,H-pad.b+16);
 
-  // ── Marcador slider (valor explorado) ──
-  const sx=toX(Math.max(5,Math.min(95,sliderVal)));
-  const sLeads=cpl>0?inv/cpl:0;
-  const sProsp=sLeads*(rReal/100)*(sliderVal/100);
-  const sV=sProsp*(rClose/100);
-  const sRev=sV*ticket;
-  const sy=toY(sRev);
-  if(Math.abs(sliderVal-refVal)>1){
-    ctx.setLineDash([4,3]);ctx.strokeStyle='#2563EB';ctx.lineWidth=1;
+  /* ── Slider azul (valor explorado) ── */
+  if(hasDiff){
+    // Vertical
+    ctx.setLineDash([4,3]);ctx.strokeStyle='rgba(37,99,235,.6)';ctx.lineWidth=1.5;
     ctx.beginPath();ctx.moveTo(sx,pad.t);ctx.lineTo(sx,pad.t+cH);ctx.stroke();
+    // Horizontal hacia eje Y
+    ctx.beginPath();ctx.moveTo(pad.l,sy);ctx.lineTo(sx,sy);ctx.stroke();
     ctx.setLineDash([]);
   }
+  // Valor en eje Y (azul)  — solo si es diferente al de referencia
+  if(hasDiff){
+    const syLabel='S/'+fN(sRev);
+    ctx.font='bold 11px system-ui';ctx.textAlign='right';ctx.fillStyle='#2563EB';
+    ctx.fillText(syLabel,pad.l-6,sy+4);
+    // X label azul
+    ctx.fillStyle='#2563EB';ctx.font='bold 11px system-ui';ctx.textAlign='center';
+    ctx.fillText(sliderVal+'%',sx,H-pad.b+16);
+  }
+  // Punto azul
   ctx.beginPath();ctx.arc(sx,sy,7,0,Math.PI*2);ctx.fillStyle='#2563EB';ctx.fill();
   ctx.beginPath();ctx.arc(sx,sy,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
 
-  // X labels
+  /* ── Diferencia entre los dos puntos ── */
+  if(hasDiff){
+    const midY=(sy+ry)/2;
+    const bx=Math.max(sx,rx)+14;
+    const bxSafe=Math.min(bx,W-80);
+    // Bracket vertical
+    ctx.strokeStyle=diff>=0?'#059669':'#DC2626';ctx.lineWidth=1.5;ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(bxSafe,sy);ctx.lineTo(bxSafe+5,sy);
+    ctx.moveTo(bxSafe+5,sy);ctx.lineTo(bxSafe+5,ry);
+    ctx.moveTo(bxSafe+5,ry);ctx.lineTo(bxSafe,ry);
+    ctx.stroke();
+    // Label diferencia
+    const diffTxt=(diff>=0?'+':'')+fS(Math.round(diff));
+    const dw=ctx.measureText(diffTxt).width+14;
+    const dx=bxSafe+8, dy=midY;
+    ctx.fillStyle=diff>=0?'#D1FAE5':'#FEE2E2';
+    ctx.beginPath();ctx.roundRect(dx,dy-10,dw,20,4);ctx.fill();
+    ctx.fillStyle=diff>=0?'#047857':'#B91C1C';
+    ctx.font='bold 11px system-ui';ctx.textAlign='left';
+    ctx.fillText(diffTxt,dx+7,dy+4);
+  }
+
+  /* ── X axis labels (grid) ── */
   [10,20,30,40,50,60,70,80,90].forEach(pct=>{
-    ctx.fillStyle='#94A3B8';ctx.font='11px system-ui';ctx.textAlign='center';
-    ctx.fillText(pct+'%',toX(pct),H-pad.b+16);
+    if(Math.abs(pct-sliderVal)>3 && Math.abs(pct-refVal)>3){
+      ctx.fillStyle='#94A3B8';ctx.font='11px system-ui';ctx.textAlign='center';
+      ctx.fillText(pct+'%',toX(pct),H-pad.b+16);
+    }
   });
   ctx.fillStyle='#64748B';ctx.font='11px system-ui';ctx.textAlign='center';
   ctx.fillText('% Conv. → Posibles Clientes',W/2,H-4);
 
-  // Update KPI panel
+  /* ── Actualizar KPIs panel izquierdo ── */
+  const{inv}=cur;
+  const sProsp=cur.inv>0?(cpl>0?inv/cpl:0)*(cur.rReal/100)*(sliderVal/100):0;
+  const sV=sProsp*(cur.rClose/100);
   const roi=inv>0?(sRev-inv)/inv*100:0;
   el('chart-pc').textContent=fN(sProsp);
   el('chart-pc-sub').textContent=sliderVal+'% de conv.';
