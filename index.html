@@ -100,10 +100,12 @@
   .ic-gold   {background:#FEF3C7}  .ic-gold svg   {stroke:#B45309}
 
   /* ══ Funnel strip — fila única ═══════════════════════════ */
-  .funnel-strip{display:flex;align-items:stretch;background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
-  .fc-mini{flex:1;min-width:120px;padding:14px 14px 13px;position:relative;overflow:hidden;display:flex;flex-direction:column;border-right:1px solid var(--border)}
-  .fc-mini:last-child{border-right:none}
-  .fc-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .funnel-strip{display:flex;align-items:stretch;background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:visible}
+  .fc-mini{flex:1;min-width:110px;padding:14px 14px 13px;position:relative;display:flex;flex-direction:column;border-right:1px solid var(--border);cursor:default;transition:background .15s;z-index:0}
+  .fc-mini:first-child{border-radius:var(--r) 0 0 var(--r)}
+  .fc-mini:last-child{border-right:none;border-radius:0 var(--r) var(--r) 0}
+  .fc-mini:hover{background:#F0F4FF;z-index:10}
+  .fc-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:inherit}
   .fc-brand::before{background:var(--brand)}
   .fc-slate::before{background:var(--border)}
   .fc-step{position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;color:var(--muted);background:#F1F5F9;border-radius:20px;padding:1px 7px;line-height:1.6}
@@ -111,6 +113,12 @@
   .fc-value{font-size:22px;font-weight:600;color:var(--text);line-height:1;letter-spacing:-.02em;margin-bottom:5px}
   .fc-value.brand{color:var(--brand)}
   .fc-ratio{display:inline-flex;align-items:center;gap:4px;background:#F1F5F9;border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:10px;font-weight:500;color:var(--text-2);width:fit-content}
+
+  /* Tooltip de cada tarjeta */
+  .fc-tip{display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#0F172A;color:#CBD5E1;font-size:12px;line-height:1.55;font-weight:400;padding:10px 14px;border-radius:9px;width:200px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.28);pointer-events:none;white-space:normal;text-align:left}
+  .fc-tip::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top:none;border-bottom-color:#0F172A}
+  .fc-tip strong{color:#fff;font-weight:600;display:block;margin-bottom:3px}
+  .fc-mini:hover .fc-tip{display:block}
 
   /* ══ Interpretation block ════════════════════════════════ */
   .interp-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 22px;box-shadow:var(--sh)}
@@ -121,59 +129,9 @@
   .interp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
   .interp-item strong{color:var(--text);font-weight:600}
 
-  /* legacy — kept for compat refs, not rendered */
+  /* legacy */
   .funnel-arrow{display:none}
 
-  /* ══ Simulation ══════════════════════════════════════════ */
-  .sim-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
-  .sim-header{padding:18px 22px;border-bottom:1px solid var(--border)}
-  .sim-title-row{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px}
-  .sim-title{font-size:14px;font-weight:600;color:var(--text);letter-spacing:-.01em}
-  .sim-subtitle{font-size:12px;color:var(--text-2);margin-top:4px;line-height:1.5}
-  .sim-highlight{display:inline-flex;align-items:center;gap:6px;background:#F1F5F9;color:var(--muted);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;margin-left:8px}
-  .var-inputs{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
-  .var-group{display:flex;align-items:center;gap:6px}
-  .var-label{font-size:11px;font-weight:500;color:var(--muted);white-space:nowrap}
-  .var-input{width:58px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:6px 10px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--text);outline:none;text-align:center;transition:border-color .15s}
-  .var-input.up:focus{border-color:var(--brand)}
-  .var-input.dn:focus{border-color:var(--orange)}
-  .var-pct{font-size:12px;font-weight:500;color:var(--muted)}
-
-  /* scenario columns */
-  .sc-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
-  .sc-col{padding:20px 22px 22px;border-right:1px solid var(--border);position:relative}
-  .sc-col:last-child{border-right:none}
-  .sc-col.is-base{background:rgba(37,99,235,.03)}
-  .sc-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:14px}
-  .sc-badge.base{background:#DBEAFE;color:#1D4ED8}
-  .sc-badge.up  {background:#D1FAE5;color:#047857}
-  .sc-badge.dn  {background:#FEF3C7;color:#B45309}
-  .sc-ratio-lbl{font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:500}
-
-  /* editable ratio inside scenario col */
-  .sc-ratio-input-wrap{display:flex;align-items:baseline;gap:6px;margin-bottom:14px}
-  .sc-ratio-input{
-    width:72px;border:1px solid var(--border);border-radius:8px;
-    padding:6px 10px;font-family:var(--font);font-size:22px;font-weight:600;
-    color:var(--text);background:#fff;outline:none;text-align:center;
-    transition:border-color .15s,box-shadow .15s;letter-spacing:-.02em;
-  }
-  .sc-ratio-input:focus{box-shadow:0 0 0 3px rgba(37,99,235,.15)}
-  .sc-col.is-base .sc-ratio-input{border-color:var(--blue);color:var(--blue)}
-  .sc-col:nth-child(2) .sc-ratio-input{border-color:var(--teal);color:var(--teal)}
-  .sc-col:nth-child(3) .sc-ratio-input{border-color:var(--orange);color:var(--orange)}
-  .sc-pct-lbl{font-size:18px;font-weight:500;color:var(--muted)}
-
-  .sc-rows{display:flex;flex-direction:column;gap:6px}
-  .sc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#F8FAFC;border-radius:7px}
-  .sc-row-lbl{font-size:12px;color:var(--text-2);font-weight:500}
-  .sc-row-val{font-size:13px;font-weight:600;color:var(--text)}
-  .sc-row-val.blue  {color:var(--brand)}
-  .sc-row-val.green {color:var(--green)}
-  .sc-row-val.orange{color:var(--amber)}
-  .sc-delta{font-size:11px;font-weight:500;margin-top:10px;padding:4px 10px;border-radius:20px;text-align:center}
-  .sc-delta.up{background:var(--green-soft);color:var(--green-text)}
-  .sc-delta.dn{background:var(--amber-soft);color:var(--amber-text)}
 
   /* ══ Table ═══════════════════════════════════════════════ */
   .tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
@@ -196,6 +154,35 @@
   .btn-exp{background:var(--brand);color:#fff;border:1px solid var(--brand);border-radius:8px;padding:9px 18px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:8px}
   .btn-exp:hover{background:#1D4ED8}
   .exp-note{font-size:12px;color:var(--muted)}
+
+  /* ══ Chart block ════════════════════════════════════════ */
+  .chart-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+  .chart-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .chart-title{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+  .chart-sub{font-size:12px;color:var(--text-2);margin-top:3px}
+  .chart-badge{display:inline-flex;align-items:center;gap:6px;background:#F1F5F9;color:var(--muted);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500}
+  .chart-body{padding:20px 20px 0}
+  .chart-slider-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .chart-slider-lbl{font-size:12px;font-weight:500;color:var(--text-2);white-space:nowrap;min-width:150px}
+  .chart-range{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--brand-soft);outline:none;cursor:pointer}
+  .chart-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--brand);border:2px solid #fff;box-shadow:0 1px 4px rgba(37,99,235,.3);cursor:pointer}
+  .chart-slider-val{font-size:16px;font-weight:600;color:var(--brand);min-width:44px;text-align:right}
+  .chart-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-top:16px}
+  .chart-kpi{background:var(--card);padding:12px 16px}
+  .chart-kpi-highlight{background:#F8FAFF}
+  .chart-kpi-lbl{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .chart-kpi-val{font-size:18px;font-weight:600;color:var(--text);letter-spacing:-.02em}
+  .chart-kpi-val.brand{color:var(--brand)}
+
+  /* ══ ManyChat CTA ════════════════════════════════════════ */
+  .manychat-cta{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px;background:#F0F7FF;border-top:1px solid #DBEAFE;flex-wrap:wrap}
+  .manychat-left{display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0}
+  .manychat-icon{width:36px;height:36px;border-radius:10px;background:#DBEAFE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .manychat-icon svg{stroke:#1D4ED8}
+  .manychat-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+  .manychat-desc{font-size:12px;color:var(--text-2);line-height:1.55}
+  .manychat-btn{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;white-space:nowrap;flex-shrink:0;transition:background .15s}
+  .manychat-btn:hover{background:#1aab52;text-decoration:none;color:#fff}
 
   @media(max-width:900px){
     .funnel-strip{flex-wrap:wrap}
@@ -290,7 +277,7 @@
   <div>
     <div class="sec-lbl">Embudo de conversión — de la inversión a la facturación</div>
 
-    <!-- Fila única con los 6 indicadores -->
+    <!-- Fila única con los 7 indicadores -->
     <div class="funnel-strip">
 
       <div class="fc-mini fc-brand">
@@ -301,6 +288,7 @@
         <div class="fc-label">Inversión</div>
         <div class="fc-value brand" id="k-inv">S/800</div>
         <div class="fc-ratio" id="k-leads-ratio">CPL S/3.00</div>
+        <div class="fc-tip"><strong>Inversión &amp; CPL</strong>Gasto total de campaña. El CPL (Costo por Lead) es la inversión dividida entre el total de leads generados.</div>
       </div>
 
       <div class="fc-mini fc-slate">
@@ -311,6 +299,7 @@
         <div class="fc-label">Total Leads</div>
         <div class="fc-value" id="k-leads">267</div>
         <div class="fc-ratio">Inv ÷ CPL</div>
+        <div class="fc-tip"><strong>Total Leads</strong>Mensajes totales iniciados en el periodo. Se obtiene dividiendo la inversión entre el costo por lead (CPL).</div>
       </div>
 
       <div class="fc-mini fc-slate">
@@ -321,6 +310,7 @@
         <div class="fc-label">Conversaciones</div>
         <div class="fc-value" id="k-real">213</div>
         <div class="fc-ratio" id="k-real-ratio">80% de leads</div>
+        <div class="fc-tip"><strong>Conversaciones</strong>Mensajes que inician un diálogo real. No todos los leads responden — solo los que abren la conversación activamente.</div>
       </div>
 
       <div class="fc-mini fc-slate">
@@ -331,6 +321,7 @@
         <div class="fc-label">Posibles Clientes</div>
         <div class="fc-value" id="k-prospect">85</div>
         <div class="fc-ratio" id="k-prospect-ratio">40% de conv.</div>
+        <div class="fc-tip"><strong>Posibles Clientes</strong>Conversaciones con intención de compra real. Son quienes muestran interés genuino y justifican el seguimiento comercial.</div>
       </div>
 
       <div class="fc-mini fc-slate">
@@ -341,16 +332,29 @@
         <div class="fc-label">Ventas Cerradas</div>
         <div class="fc-value" id="k-sales">26</div>
         <div class="fc-ratio" id="k-sales-ratio">30% de posibles</div>
+        <div class="fc-tip"><strong>Ventas Cerradas</strong>Cantidad de transacciones facturadas. Resultado de aplicar el ratio de cierre sobre los posibles clientes del embudo.</div>
+      </div>
+
+      <div class="fc-mini fc-slate">
+        <span class="fc-step">6</span>
+        <div class="ic ic-slate">
+          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <div class="fc-label">Ratio de Ventas</div>
+        <div class="fc-value" id="k-ratio">—%</div>
+        <div class="fc-ratio">Ventas ÷ Leads</div>
+        <div class="fc-tip"><strong>Ratio de Ventas</strong>Eficiencia total del embudo. Mide qué porcentaje de todos los leads iniciados termina en una venta cerrada.</div>
       </div>
 
       <div class="fc-mini fc-brand">
-        <span class="fc-step">6</span>
+        <span class="fc-step">7</span>
         <div class="ic ic-brand">
           <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
         <div class="fc-label">Facturación Est.</div>
         <div class="fc-value brand" id="k-revenue">S/4,030</div>
         <div class="fc-ratio" id="k-roi-badge">ROI ▲ —%</div>
+        <div class="fc-tip"><strong>Facturación &amp; ROI</strong>Ingresos totales por ventas proyectadas (ventas × ticket). El ROI mide la rentabilidad porcentual sobre la inversión inicial.</div>
       </div>
 
     </div><!-- /.funnel-strip -->
@@ -384,119 +388,61 @@
 
   </div>
 
-  <!-- Simulation -->
+  <!-- Gráfico interactivo + CTA ManyChat -->
   <div>
-    <div class="sec-lbl">Simulación de escenarios</div>
-    <div class="sim-block">
-      <div class="sim-header">
-        <div class="sim-title-row">
-          <div>
-            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:5px">
-              <div class="sim-title">Impacto de la Gestión de Leads → Posibles Clientes</div>
-              <div class="sim-highlight">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                Variable clave del embudo
-              </div>
-            </div>
-            <div class="sim-subtitle">Edita el % de conversión en cada columna y explora cómo impacta en tu facturación. La variación de los escenarios ±% se aplica automáticamente pero puedes ajustarla.</div>
+    <div class="sec-lbl">Simulador de conversión — ¿Qué pasa si mejoras tu seguimiento?</div>
+    <div class="chart-block">
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">Facturación proyectada según % Conversaciones → Posibles Clientes</div>
+          <div class="chart-sub">Mueve el slider para ver cómo impacta en tu facturación final</div>
+        </div>
+        <div class="chart-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          Variable clave del embudo
+        </div>
+      </div>
+      <div class="chart-body">
+        <div class="chart-slider-row">
+          <span class="chart-slider-lbl">% Conv. → Posibles</span>
+          <input id="chart-slider" type="range" min="5" max="95" step="1" value="40" class="chart-range"/>
+          <span class="chart-slider-val"><span id="chart-pct">40</span>%</span>
+        </div>
+        <canvas id="chart-canvas" height="200"></canvas>
+        <div class="chart-kpis">
+          <div class="chart-kpi">
+            <div class="chart-kpi-lbl">Posibles Clientes</div>
+            <div class="chart-kpi-val" id="chart-pc">—</div>
           </div>
-          <div class="var-inputs">
-            <div class="var-group">
-              <span class="var-label">▲ Variación alta</span>
-              <input id="var-up" class="var-input up" type="number" value="10" min="1" max="99" step="1"/>
-              <span class="var-pct">%</span>
-            </div>
-            <div class="var-group">
-              <span class="var-label">▼ Variación baja</span>
-              <input id="var-dn" class="var-input dn" type="number" value="10" min="1" max="99" step="1"/>
-              <span class="var-pct">%</span>
-            </div>
+          <div class="chart-kpi">
+            <div class="chart-kpi-lbl">Ventas Cerradas</div>
+            <div class="chart-kpi-val" id="chart-v">—</div>
+          </div>
+          <div class="chart-kpi chart-kpi-highlight">
+            <div class="chart-kpi-lbl">Facturación Est.</div>
+            <div class="chart-kpi-val brand" id="chart-f">—</div>
+          </div>
+          <div class="chart-kpi">
+            <div class="chart-kpi-lbl">ROI</div>
+            <div class="chart-kpi-val" id="chart-roi">—</div>
           </div>
         </div>
       </div>
-
-      <div class="sc-grid">
-
-        <!-- Actual -->
-        <div class="sc-col is-base">
-          <div class="sc-badge base">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
-            Escenario Actual
+      <!-- CTA ManyChat -->
+      <div class="manychat-cta">
+        <div class="manychat-left">
+          <div class="manychat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
-          <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
-          <div class="sc-ratio-input-wrap">
-            <input id="sc-mid-input" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="40" style="border-color:var(--blue);color:var(--blue)"/>
-            <span class="sc-pct-lbl" style="color:var(--blue)">%</span>
-          </div>
-          <div class="sc-rows">
-            <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val blue" id="sc-mid-real">—</span></div>
-            <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val blue" id="sc-mid-pc">—</span></div>
-          </div>
-          <div class="sc-ratio-lbl" style="margin-top:10px;">Ratio de Cierre</div>
-          <div class="sc-ratio-input-wrap">
-            <input id="sc-mid-close" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="30" style="border-color:var(--blue);color:var(--blue)"/>
-            <span class="sc-pct-lbl" style="color:var(--blue)">%</span>
-          </div>
-          <div class="sc-rows">
-            <div class="sc-row"><span class="sc-row-lbl">Ventas Cerradas</span><span class="sc-row-val blue" id="sc-mid-v">—</span></div>
-            <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val blue" id="sc-mid-f">—</span></div>
+          <div>
+            <div class="manychat-title">¿Cómo mejorar este ratio automáticamente?</div>
+            <div class="manychat-desc">Con una automatización de seguimiento en ManyChat, puedes aumentar el % de conversaciones que se convierten en posibles clientes sin esfuerzo manual. Cada punto de mejora en este ratio se traduce directamente en más ventas.</div>
           </div>
         </div>
-
-        <!-- +X% -->
-        <div class="sc-col">
-          <div class="sc-badge up" id="sc-up-badge">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-            +10% Conversión
-          </div>
-          <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
-          <div class="sc-ratio-input-wrap">
-            <input id="sc-high-input" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="44" style="border-color:var(--green);color:var(--green)"/>
-            <span class="sc-pct-lbl" style="color:var(--green)">%</span>
-          </div>
-          <div class="sc-rows">
-            <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val green" id="sc-high-real">—</span></div>
-            <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val green" id="sc-high-pc">—</span></div>
-          </div>
-          <div class="sc-ratio-lbl" style="margin-top:10px;">Ratio de Cierre</div>
-          <div class="sc-ratio-input-wrap">
-            <input id="sc-high-close" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="30" style="border-color:var(--green);color:var(--green)"/>
-            <span class="sc-pct-lbl" style="color:var(--green)">%</span>
-          </div>
-          <div class="sc-rows">
-            <div class="sc-row"><span class="sc-row-lbl">Ventas Cerradas</span><span class="sc-row-val green" id="sc-high-v">—</span></div>
-            <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val green" id="sc-high-f">—</span></div>
-          </div>
-          <div class="sc-delta up" id="sc-high-delta">—</div>
-        </div>
-
-        <!-- -X% -->
-        <div class="sc-col">
-          <div class="sc-badge dn" id="sc-dn-badge">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-            −10% Conversión
-          </div>
-          <div class="sc-ratio-lbl">Ratio Conv. → Posibles Clientes</div>
-          <div class="sc-ratio-input-wrap">
-            <input id="sc-low-input" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="36" style="border-color:var(--orange);color:var(--orange)"/>
-            <span class="sc-pct-lbl" style="color:var(--orange)">%</span>
-          </div>
-          <div class="sc-rows">
-            <div class="sc-row"><span class="sc-row-lbl">Conv. Reales</span><span class="sc-row-val orange" id="sc-low-real">—</span></div>
-            <div class="sc-row"><span class="sc-row-lbl">Posibles Clientes</span><span class="sc-row-val orange" id="sc-low-pc">—</span></div>
-          </div>
-          <div class="sc-ratio-lbl" style="margin-top:10px;">Ratio de Cierre</div>
-          <div class="sc-ratio-input-wrap">
-            <input id="sc-low-close" class="sc-ratio-input" type="number" min="1" max="100" step="0.5" value="30" style="border-color:var(--orange);color:var(--orange)"/>
-            <span class="sc-pct-lbl" style="color:var(--orange)">%</span>
-          </div>
-          <div class="sc-rows">
-            <div class="sc-row"><span class="sc-row-lbl">Ventas Cerradas</span><span class="sc-row-val orange" id="sc-low-v">—</span></div>
-            <div class="sc-row"><span class="sc-row-lbl">Facturación</span><span class="sc-row-val orange" id="sc-low-f">—</span></div>
-          </div>
-          <div class="sc-delta dn" id="sc-low-delta">—</div>
-        </div>
-
+        <a class="manychat-btn" href="https://wa.me/51999999999?text=Hola%2C%20vi%20la%20calculadora%20de%20Lima%20Retail%20y%20me%20interesa%20implementar%20ManyChat%20para%20mejorar%20mi%20ratio%20de%20conversión." target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          Hablar con Lima Retail
+        </a>
       </div>
     </div>
   </div>
@@ -545,25 +491,11 @@ function calcRow(inv,days,cpl,rReal,rProsp,rClose,ticket){
   return{leads,reales,prospects,ventas,revenue,rows};
 }
 
-function calcScenario(inv,days,cpl,rReal,rProsp,rClose,ticket){
-  const leads     = cpl>0?inv/cpl:0;
-  const reales    = leads*(rReal/100);
-  const prospects = reales*(rProsp/100);
-  const ventas    = prospects*(rClose/100);
-  const revenue   = ventas*ticket;
-  return{reales,prospects,ventas,revenue};
-}
-
 let cur=null;
-// Track if scenario inputs were manually edited
-let scManual={mid:false,high:false,low:false};
-let scCloseManual={mid:false,high:false,low:false};
 
 function setCPL(v){
   el('cpl').value=v;
   document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('on',parseFloat(b.textContent.replace('S/',''))===parseFloat(v)));
-  scManual={mid:false,high:false,low:false};
-  scCloseManual={mid:false,high:false,low:false};
   render();
 }
 
@@ -575,72 +507,29 @@ function render(){
   const rProsp = parseFloat(el('r-prospect').value)||40;
   const rClose = parseFloat(el('r-close').value)||30;
   const ticket = parseFloat(el('ticket').value)||157.42;
-  const varUp  = parseFloat(el('var-up').value)||10;
-  const varDn  = parseFloat(el('var-dn').value)||10;
   const d = calcRow(inv,days,cpl,rReal,rProsp,rClose,ticket);
-  cur={d,inv,days,cpl,rReal,rProsp,rClose,ticket,varUp,varDn};
+  cur={d,inv,days,cpl,rReal,rProsp,rClose,ticket};
 
   const roi=inv>0?(d.revenue-inv)/inv*100:0;
-  el('k-inv').textContent         = fS(inv);
-  el('k-leads').textContent       = fN(d.leads);
-  el('k-leads-ratio').textContent = `CPL ${fS(cpl,2)}`;
-  el('k-real').textContent        = fN(d.reales);
-  el('k-real-ratio').textContent  = `${rReal}% de leads`;
-  el('k-prospect').textContent    = fN(d.prospects);
-  el('k-prospect-ratio').textContent=`${rProsp}% de conv.`;
-  el('k-sales').textContent       = fN(d.ventas);
-  el('k-sales-ratio').textContent = `${rClose}% de posibles`;
-  el('k-revenue').textContent     = fS(d.revenue);
+  el('k-inv').textContent              = fS(inv);
+  el('k-leads').textContent            = fN(d.leads);
+  el('k-leads-ratio').textContent      = `CPL ${fS(cpl,2)}`;
+  el('k-real').textContent             = fN(d.reales);
+  el('k-real-ratio').textContent       = `${rReal}% de leads`;
+  el('k-prospect').textContent         = fN(d.prospects);
+  el('k-prospect-ratio').textContent   = `${rProsp}% de conv.`;
+  el('k-sales').textContent            = fN(d.ventas);
+  el('k-sales-ratio').textContent      = `${rClose}% de posibles`;
+  el('k-revenue').textContent          = fS(d.revenue);
   const roiEl=el('k-roi-badge');
   roiEl.textContent=`ROI ${roi>=0?'▲':'▼'} ${Math.abs(roi).toFixed(1)}%`;
   roiEl.style.color=roi>=0?'var(--brand)':'var(--red)';
+  const ratioVentas = d.leads>0?(d.ventas/d.leads*100):0;
+  el('k-ratio').textContent = ratioVentas.toFixed(1)+'%';
   updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi);
-
-  // Update scenario inputs if not manually overridden
-  if(!scManual.mid)  el('sc-mid-input').value  = rProsp.toFixed(1);
-  if(!scManual.high) el('sc-high-input').value = (rProsp*(1+varUp/100)).toFixed(1);
-  if(!scManual.low)  el('sc-low-input').value  = Math.max(1,rProsp*(1-varDn/100)).toFixed(1);
-  if(!scCloseManual.mid)  el('sc-mid-close').value  = rClose.toFixed(1);
-  if(!scCloseManual.high) el('sc-high-close').value = rClose.toFixed(1);
-  if(!scCloseManual.low)  el('sc-low-close').value  = rClose.toFixed(1);
-
-  renderScenarios(inv,days,cpl,rReal,ticket);
   el('exp-note').textContent=`Incluye ${days} días · ${d.rows.length} filas · Generado hoy`;
-
-  el('sc-up-badge').innerHTML=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg> +${varUp}% Conversión`;
-  el('sc-dn-badge').innerHTML=`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg> −${varDn}% Conversión`;
-}
-
-function renderScenarios(inv,days,cpl,rReal,ticket){
-  const rMid      = parseFloat(el('sc-mid-input').value)||40;
-  const rHigh     = parseFloat(el('sc-high-input').value)||44;
-  const rLow      = parseFloat(el('sc-low-input').value)||36;
-  const rCloseMid  = parseFloat(el('sc-mid-close').value)||30;
-  const rCloseHigh = parseFloat(el('sc-high-close').value)||30;
-  const rCloseLow  = parseFloat(el('sc-low-close').value)||30;
-
-  const sMid  = calcScenario(inv,days,cpl,rReal,rMid, rCloseMid, ticket);
-  const sHigh = calcScenario(inv,days,cpl,rReal,rHigh,rCloseHigh,ticket);
-  const sLow  = calcScenario(inv,days,cpl,rReal,rLow, rCloseLow, ticket);
-
-  el('sc-mid-real').textContent  = fN(sMid.reales);
-  el('sc-mid-pc').textContent    = fN(sMid.prospects);
-  el('sc-mid-v').textContent     = fN(sMid.ventas);
-  el('sc-mid-f').textContent     = fS(sMid.revenue);
-
-  el('sc-high-real').textContent  = fN(sHigh.reales);
-  el('sc-high-pc').textContent    = fN(sHigh.prospects);
-  el('sc-high-v').textContent     = fN(sHigh.ventas);
-  el('sc-high-f').textContent     = fS(sHigh.revenue);
-  const dH=sHigh.revenue-sMid.revenue;
-  el('sc-high-delta').textContent=(dH>=0?`▲ +${fS(Math.abs(dH))}`:`▼ −${fS(Math.abs(dH))}`)+' vs actual';
-
-  el('sc-low-real').textContent  = fN(sLow.reales);
-  el('sc-low-pc').textContent    = fN(sLow.prospects);
-  el('sc-low-v').textContent     = fN(sLow.ventas);
-  el('sc-low-f').textContent     = fS(sLow.revenue);
-  const dL=sLow.revenue-sMid.revenue;
-  el('sc-low-delta').textContent=(dL>=0?`▲ +${fS(Math.abs(dL))}`:`▼ −${fS(Math.abs(dL))}`)+' vs actual';
+  // Redraw chart with current sidebar ratio
+  if(el('chart-slider')) drawChart(parseInt(el('chart-slider').value));
 }
 
 
@@ -695,24 +584,116 @@ function exportCSV(){
 function init(){
   el('last-update').textContent=`Última actualización: hoy, ${new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'})}`;
   ['investment','cpl','r-real','r-prospect','r-close','ticket'].forEach(id=>
-    el(id).addEventListener('input',()=>{scManual={mid:false,high:false,low:false};scCloseManual={mid:false,high:false,low:false};render();}));
-  ['var-up','var-dn'].forEach(id=>el(id).addEventListener('input',()=>{scManual={mid:false,high:false,low:false};render();}));
-
-  // Scenario conv ratio inputs — manually editable
-  el('sc-mid-input').addEventListener('input',()=>{scManual.mid=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
-  el('sc-high-input').addEventListener('input',()=>{scManual.high=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
-  el('sc-low-input').addEventListener('input',()=>{scManual.low=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
-
-  // Scenario close ratio inputs — independently editable per column
-  el('sc-mid-close').addEventListener('input',()=>{scCloseManual.mid=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
-  el('sc-high-close').addEventListener('input',()=>{scCloseManual.high=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
-  el('sc-low-close').addEventListener('input',()=>{scCloseManual.low=true;if(cur)renderScenarios(cur.inv,cur.days,cur.cpl,cur.rReal,cur.ticket);});
-
-  // Active CPL preset
+    el(id).addEventListener('input',render));
   const initCPL=parseFloat(el('cpl').value);
   document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('on',parseFloat(b.textContent.replace('S/',''))===initCPL));
   render();
+  initChart();
+  // Sync slider initial position with sidebar r-prospect
+  el('r-prospect').addEventListener('input',()=>{
+    const v=parseFloat(el('r-prospect').value)||40;
+    el('chart-slider').value=Math.round(v);
+    el('chart-pct').textContent=Math.round(v);
+    drawChart(Math.round(v));
+  });
 }
+/* ── Gráfico interactivo ─────────────────────────────── */
+function drawChart(sliderVal){
+  if(!cur) return;
+  const {inv,days,cpl,rReal,rClose,ticket} = cur;
+  const canvas = document.getElementById('chart-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth; const H = 200;
+  canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+
+  // Data: facturación para cada % de 5..95
+  const pts=[];
+  for(let pct=5;pct<=95;pct+=2){
+    const leads=cpl>0?inv/cpl:0;
+    const reales=leads*(rReal/100);
+    const prosp=reales*(pct/100);
+    const v=prosp*(rClose/100);
+    pts.push({pct,rev:v*ticket});
+  }
+  const maxRev=Math.max(...pts.map(p=>p.rev),1);
+  const pad={t:16,r:16,b:36,l:60};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b;
+
+  // Grid lines
+  ctx.strokeStyle='#E2E8F0'; ctx.lineWidth=1;
+  [0,.25,.5,.75,1].forEach(f=>{
+    const y=pad.t+cH*(1-f);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
+    ctx.fillStyle='#94A3B8';ctx.font='10px system-ui';ctx.textAlign='right';
+    ctx.fillText('S/'+fN(maxRev*f),pad.l-6,y+3);
+  });
+
+  // Area fill
+  const toX=pct=>(pad.l+((pct-5)/90)*cW);
+  const toY=rev=>(pad.t+cH*(1-rev/maxRev));
+  ctx.beginPath();
+  ctx.moveTo(toX(pts[0].pct),pad.t+cH);
+  pts.forEach(p=>ctx.lineTo(toX(p.pct),toY(p.rev)));
+  ctx.lineTo(toX(pts[pts.length-1].pct),pad.t+cH);
+  ctx.closePath();
+  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
+  grad.addColorStop(0,'rgba(37,99,235,.18)');grad.addColorStop(1,'rgba(37,99,235,.01)');
+  ctx.fillStyle=grad;ctx.fill();
+
+  // Line
+  ctx.beginPath();ctx.strokeStyle='#2563EB';ctx.lineWidth=2;ctx.lineJoin='round';
+  pts.forEach((p,i)=>i===0?ctx.moveTo(toX(p.pct),toY(p.rev)):ctx.lineTo(toX(p.pct),toY(p.rev)));
+  ctx.stroke();
+
+  // Current marker
+  const cx2=toX(sliderVal);
+  const leads=cpl>0?inv/cpl:0;
+  const reales=leads*(rReal/100);
+  const prosp=reales*(sliderVal/100);
+  const v=prosp*(rClose/100);
+  const rev=v*ticket;
+  const cy2=toY(rev);
+  // vertical dashed line
+  ctx.setLineDash([4,3]);ctx.strokeStyle='#2563EB';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(cx2,pad.t);ctx.lineTo(cx2,pad.t+cH);ctx.stroke();
+  ctx.setLineDash([]);
+  // dot
+  ctx.beginPath();ctx.arc(cx2,cy2,6,0,Math.PI*2);ctx.fillStyle='#2563EB';ctx.fill();
+  ctx.beginPath();ctx.arc(cx2,cy2,4,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+
+  // X-axis labels
+  [10,20,30,40,50,60,70,80,90].forEach(pct=>{
+    const x=toX(pct);
+    ctx.fillStyle='#94A3B8';ctx.font='10px system-ui';ctx.textAlign='center';
+    ctx.fillText(pct+'%',x,H-pad.b+14);
+  });
+  ctx.fillStyle='#64748B';ctx.font='10px system-ui';ctx.textAlign='center';
+  ctx.fillText('% Conv. → Posibles Clientes',W/2,H-2);
+
+  // Update KPIs
+  const roi=inv>0?(rev-inv)/inv*100:0;
+  el('chart-pc').textContent=fN(prosp);
+  el('chart-v').textContent=fN(v);
+  el('chart-f').textContent=fS(rev);
+  const roiC=el('chart-roi');
+  roiC.textContent=(roi>=0?'▲ ':'▼ ')+Math.abs(roi).toFixed(0)+'%';
+  roiC.style.color=roi>=0?'var(--brand)':'var(--red)';
+}
+
+function initChart(){
+  const slider=el('chart-slider');
+  const pctLbl=el('chart-pct');
+  function update(){
+    const v=parseInt(slider.value);
+    pctLbl.textContent=v;
+    drawChart(v);
+  }
+  slider.addEventListener('input',update);
+  window.addEventListener('resize',()=>drawChart(parseInt(slider.value)));
+  update();
+}
+
 document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
