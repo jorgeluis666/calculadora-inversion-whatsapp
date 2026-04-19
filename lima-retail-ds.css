@@ -102,7 +102,7 @@ a:hover { text-decoration: underline; }
   letter-spacing: -.01em;
 }
 .s-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: #64748B;
   margin-top: 2px;
 }
@@ -308,19 +308,19 @@ input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 /* ── Formularios en sidebar (fondo oscuro) ── */
 .sf-lbl {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: .07em;
+  letter-spacing: .06em;
   text-transform: uppercase;
   color: #94A3B8;
   margin-bottom: 5px;
 }
 .sf-hint {
-  font-size: 11px;
+  font-size: 12px;
   color: #64748B;
   font-weight: 400;
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: 8px;
   line-height: 1.5;
 }
 .sf-input {
@@ -328,9 +328,9 @@ input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.1);
   border-radius: var(--r-sm);
-  padding: 9px 12px;
+  padding: 10px 13px;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   font-family: inherit;
   outline: none;
