@@ -53,10 +53,11 @@
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.45}
-  .layout{display:flex;min-height:100vh}
+  .layout{display:flex;flex-direction:column;min-height:100vh}
+  .layout-body{display:flex;flex:1;overflow:hidden}
 
   /* ══ Sidebar ═══════════════════════════════════════════ */
-  .sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;overflow-y:auto}
+  .sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;overflow-y:auto;align-self:stretch}
   .s-brand{padding:20px 20px 18px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:10px}
   .s-title{font-size:15px;font-weight:600;color:#fff;letter-spacing:-.01em}
   .s-sub{font-size:12px;color:#64748B;margin-top:2px}
@@ -81,8 +82,8 @@
   .s-div{border:none;border-top:1px solid rgba(255,255,255,.06);margin:6px 8px}
 
   /* ══ Main ═══════════════════════════════════════════════ */
-  .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
-  .topbar{padding:22px 28px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0}
+  .main{flex:1;overflow-y:auto;display:flex;flex-direction:column;min-width:0}
+  .topbar{padding:18px 28px 18px 24px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-shrink:0;width:100%}
   .topbar-title{font-size:20px;font-weight:600;color:var(--text);letter-spacing:-.015em}
   .topbar-badge{display:inline-flex;align-items:center;gap:6px;background:var(--brand-soft);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500;color:var(--brand-text);white-space:nowrap}
   .content{padding:22px 28px;display:flex;flex-direction:column;gap:22px;flex:1}
@@ -230,8 +231,9 @@
   @media(max-width:900px){
     /* Sidebar */
     .sidebar{width:100%;min-width:0}
-    .layout{flex-direction:column}
-    .topbar,.content{padding:16px 18px}
+    .layout-body{flex-direction:column}
+    .topbar{padding:14px 18px}
+    .content{padding:16px 18px}
 
     /* Funnel strip: 2 columnas */
     .funnel-strip{flex-wrap:wrap}
@@ -300,14 +302,17 @@
 <body>
 <div class="layout">
 
-<!-- ══ Sidebar ═══════════════════════════════════════════════ -->
-<aside class="sidebar">
-  <div class="s-brand">
-    <div class="s-title">Investment Calculator</div>
-    <div class="s-sub">Agencia Lima Retail</div>
+<!-- ══ Topbar full-width ════════════════════════════════════ -->
+  <div class="topbar">
+    <div class="topbar-title">Calculadora de inversión</div>
+    <span class="topbar-badge">Lima Retail</span>
   </div>
 
-  <div class="s-body">
+<div class="layout-body">
+
+<!-- ══ Sidebar ═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="s-body" style="padding-top:20px">
     <div class="fw">
       <label class="fl" for="investment">Inversión Total (PEN)</label>
       <div class="fi-wrap"><span class="fi-pre">S/</span>
@@ -362,11 +367,6 @@
 
 <!-- ══ Main ════════════════════════════════════════════════════ -->
 <main class="main">
-
-  <div class="topbar">
-    <div class="topbar-title">Calculadora de inversión</div>
-    <span class="topbar-badge">Lima Retail</span>
-  </div>
 
   <div class="content">
 
@@ -654,7 +654,8 @@
 
   </div><!-- /.content -->
 </main>
-</div>
+</div><!-- /.layout-body -->
+</div><!-- /.layout -->
 
 <script>
 const el = id => document.getElementById(id);
