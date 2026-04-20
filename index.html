@@ -795,6 +795,16 @@ function calcRev(pct){
   return leads*(rReal/100)*(pct/100)*(rClose/100)*ticket;
 }
 
+function rrect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+
 function drawChart(sliderVal,refVal){
   if(!cur) return;
   if(refVal===undefined) refVal=parseFloat(el('r-prospect').value)||40;
@@ -865,7 +875,7 @@ function drawChart(sliderVal,refVal){
   const tw=ctx.measureText('Tu ratio actual: '+refVal+'%').width+14;
   const tlx=Math.min(Math.max(rx-tw/2,2),W-tw-2);
   ctx.fillStyle='#F1F5F9';
-  ctx.beginPath();ctx.roundRect(tlx,pad.t-1,tw,18,4);ctx.fill();
+  rrect(ctx,tlx,pad.t-1,tw,18,4);ctx.fill();
   ctx.fillStyle='#475569';ctx.font='bold 10px system-ui';ctx.textAlign='center';
   ctx.fillText('Tu ratio actual: '+refVal+'%',tlx+tw/2,pad.t+12);
   // Punto gris
@@ -913,7 +923,7 @@ function drawChart(sliderVal,refVal){
     const dw=ctx.measureText(diffTxt).width+14;
     const dx=bxSafe+8, dy=midY;
     ctx.fillStyle=diff>=0?'#D1FAE5':'#FEE2E2';
-    ctx.beginPath();ctx.roundRect(dx,dy-10,dw,20,4);ctx.fill();
+    rrect(ctx,dx,dy-10,dw,20,4);ctx.fill();
     ctx.fillStyle=diff>=0?'#047857':'#B91C1C';
     ctx.font='bold 11px system-ui';ctx.textAlign='left';
     ctx.fillText(diffTxt,dx+7,dy+4);
