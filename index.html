@@ -994,17 +994,40 @@ function initChart(){
 document.addEventListener('DOMContentLoaded',init);
 
 /* ── Auto-resize iFrame ──────────────────────────────────── */
-function notifyHeight(){
-  const h=document.body.scrollHeight;
-  if(h>100) window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
-}
-window.addEventListener('load',function(){
-  notifyHeight();
-  setTimeout(notifyHeight,300);
-  setTimeout(notifyHeight,800);
-  setTimeout(notifyHeight,1500);
-});
-window.addEventListener('resize',notifyHeight);
+(function(){
+  let lastH=0, pending=false;
+  function getH(){
+    return Math.max(
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight,
+      document.body.scrollHeight,
+      document.body.offsetHeight
+    );
+  }
+  function send(){
+    pending=false;
+    const h=getH();
+    if(h>100 && Math.abs(h-lastH)>1){
+      lastH=h;
+      window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
+    }
+  }
+  function schedule(){
+    if(pending) return;
+    pending=true;
+    requestAnimationFrame(send);
+  }
+  window.addEventListener('load',function(){
+    schedule();
+    [150,400,900,1800,3500].forEach(t=>setTimeout(schedule,t));
+  });
+  window.addEventListener('resize',schedule);
+  if(window.ResizeObserver){
+    new ResizeObserver(schedule).observe(document.documentElement);
+  }
+  document.addEventListener('input',schedule,true);
+  document.addEventListener('change',schedule,true);
+})();
 </script>
 </body>
 </html>
