@@ -372,7 +372,7 @@
       <label class="fl">Ticket Promedio (PEN)</label>
       <span class="fl-hint">Valor promedio de cada venta cerrada</span>
       <div class="fi-wrap"><span class="fi-pre">S/</span>
-        <input id="ticket" class="fi" type="number" value="157.42" min="1" step="5"/>
+        <input id="ticket" class="fi" type="number" value="200" min="1" step="5"/>
       </div>
     </div>
   </div>
@@ -653,18 +653,6 @@
     </div>
   </div>
 
-  <!-- Export -->
-  <div>
-    <div class="sec-lbl">Exportar proyección</div>
-    <div class="exp-row">
-      <button class="btn-exp" onclick="exportCSV()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Descargar CSV
-      </button>
-      <span class="exp-note" id="exp-note">Proyección de 30 días · Generada hoy</span>
-    </div>
-  </div>
-
   </div><!-- /.content -->
 </main>
 </div><!-- /.layout-body -->
@@ -713,7 +701,7 @@ function render(){
   const rReal  = parseFloat(el('r-real').value)||80;
   const rProsp = parseFloat(el('r-prospect').value)||40;
   const rClose = parseFloat(el('r-close').value)||30;
-  const ticket = parseFloat(el('ticket').value)||157.42;
+  const ticket = parseFloat(el('ticket').value)||200;
   const d = calcRow(inv,days,cpl,rReal,rProsp,rClose,ticket);
   cur={d,inv,days,cpl,rReal,rProsp,rClose,ticket};
 
