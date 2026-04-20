@@ -52,9 +52,9 @@
     --sh2: 0 4px 14px rgba(15,23,42,.08);
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.45}
+  html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.45}
   .layout{display:flex;flex-direction:column;min-height:100vh}
-  .layout-body{display:flex;flex:1;overflow:hidden}
+  .layout-body{display:flex;flex:1;min-height:0}
 
   /* ══ Sidebar ═══════════════════════════════════════════ */
   .sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;overflow-y:auto;align-self:stretch}
@@ -992,6 +992,15 @@ function initChart(){
 }
 
 document.addEventListener('DOMContentLoaded',init);
+
+/* ── Auto-resize iFrame ──────────────────────────────────── */
+function notifyHeight(){
+  const h=document.documentElement.scrollHeight;
+  window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
+}
+window.addEventListener('load',notifyHeight);
+window.addEventListener('resize',notifyHeight);
+new MutationObserver(notifyHeight).observe(document.body,{subtree:true,childList:true,attributes:true,characterData:true});
 </script>
 </body>
 </html>
