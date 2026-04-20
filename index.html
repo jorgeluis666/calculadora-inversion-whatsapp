@@ -722,7 +722,6 @@ function render(){
   const ratioVentas = d.leads>0?(d.ventas/d.leads*100):0;
   el('k-ratio').textContent = ratioVentas.toFixed(1)+'%';
   updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi);
-  el('exp-note').textContent=`Incluye ${days} días · ${d.rows.length} filas · Generado hoy`;
   // Redraw chart — sync reference line with sidebar r-prospect
   if(el('chart-slider')){
     const refV=Math.round(rProsp);
