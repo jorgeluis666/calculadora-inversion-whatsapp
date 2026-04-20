@@ -53,8 +53,8 @@
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.45;overflow-x:hidden}
-  .layout{display:flex;flex-direction:column;min-height:100vh}
-  .layout-body{display:flex;flex:1;min-height:0}
+  .layout{display:flex;flex-direction:column}
+  .layout-body{display:flex;min-height:0}
 
   /* ══ Sidebar ═══════════════════════════════════════════ */
   .sidebar{width:240px;min-width:240px;background:var(--sidebar-bg);color:var(--sidebar-text);display:flex;flex-direction:column;overflow-y:auto;align-self:stretch}
@@ -995,13 +995,16 @@ document.addEventListener('DOMContentLoaded',init);
 
 /* ── Auto-resize iFrame ──────────────────────────────────── */
 function notifyHeight(){
-  const h=document.body.offsetHeight;
-  window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
+  const h=document.body.scrollHeight;
+  if(h>100) window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
 }
-window.addEventListener('load',notifyHeight);
+window.addEventListener('load',function(){
+  notifyHeight();
+  setTimeout(notifyHeight,300);
+  setTimeout(notifyHeight,800);
+  setTimeout(notifyHeight,1500);
+});
 window.addEventListener('resize',notifyHeight);
-// Solo observa cambios estructurales, no atributos (evita bucle)
-new MutationObserver(notifyHeight).observe(document.body,{subtree:true,childList:true});
 </script>
 </body>
 </html>
