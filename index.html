@@ -104,8 +104,23 @@
   .fc-mini{flex:1;min-width:110px;padding:14px 14px 13px;position:relative;display:flex;flex-direction:column;border-right:1px solid var(--border);cursor:default;transition:background .15s;z-index:0}
   .fc-mini:first-child{border-radius:var(--r) 0 0 var(--r)}
   .fc-mini:last-child{border-right:none;border-radius:0 var(--r) var(--r) 0}
-  .fc-mini:hover{background:#F0F4FF;z-index:10}
-  .fc-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:inherit}
+  .fc-mini:hover{z-index:10}
+  .fc-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:inherit;background:transparent;transition:background .2s}
+  /* Línea superior coloreada al hacer hover — un color por paso del funnel */
+  .fc-mini:nth-child(1):hover::before{background:var(--brand)}
+  .fc-mini:nth-child(2):hover::before{background:var(--purple)}
+  .fc-mini:nth-child(3):hover::before{background:var(--amber)}
+  .fc-mini:nth-child(4):hover::before{background:#0EA5E9}
+  .fc-mini:nth-child(5):hover::before{background:var(--green)}
+  .fc-mini:nth-child(6):hover::before{background:var(--red)}
+  .fc-mini:nth-child(7):hover::before{background:var(--brand)}
+  /* Fondo con tinte leve que coincide con el color de la línea */
+  .fc-mini:nth-child(1):hover,.fc-mini:nth-child(7):hover{background:#EFF6FF}
+  .fc-mini:nth-child(2):hover{background:#F5F3FF}
+  .fc-mini:nth-child(3):hover{background:#FFFBEB}
+  .fc-mini:nth-child(4):hover{background:#F0F9FF}
+  .fc-mini:nth-child(5):hover{background:#F0FDF4}
+  .fc-mini:nth-child(6):hover{background:#FFF1F2}
   .fc-brand::before{background:var(--brand)}
   .fc-slate::before{background:var(--border)}
   .fc-step{position:absolute;top:10px;right:10px;font-size:12px;font-weight:600;color:var(--muted);background:#F1F5F9;border-radius:20px;padding:1px 7px;line-height:1.6}
