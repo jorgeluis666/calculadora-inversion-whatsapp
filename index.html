@@ -1027,7 +1027,14 @@ document.addEventListener('DOMContentLoaded',init);
   }
   window.addEventListener('load',function(){
     schedule();
-    [150,400,900,1800,3500].forEach(t=>setTimeout(schedule,t));
+    // Keep pinging height every 500ms for 15s. Parents behind WP Rocket's
+    // "Delay JS" attach their listener only after user interaction, so initial
+    // messages get dropped. Repeated pings let the late listener still catch one.
+    const stopAt=Date.now()+15000;
+    (function pingLoop(){
+      schedule();
+      if(Date.now()<stopAt) setTimeout(pingLoop,500);
+    })();
   });
   window.addEventListener('resize',schedule);
   if(window.ResizeObserver){
