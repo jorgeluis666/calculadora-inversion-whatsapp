@@ -1005,12 +1005,16 @@ document.addEventListener('DOMContentLoaded',init);
 (function(){
   let lastH=0, pending=false;
   function getH(){
-    return Math.max(
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight,
-      document.body.scrollHeight,
-      document.body.offsetHeight
-    );
+    // Measure the actual content container .layout, NOT the body/html.
+    // body has `min-height:100%` which in iFrame context inflates to the
+    // iFrame's own height — creating a feedback loop where any reported
+    // height "validates" itself and the iFrame never shrinks to content.
+    const layout=document.querySelector('.layout');
+    if(layout){
+      const rect=layout.getBoundingClientRect();
+      return Math.ceil(rect.bottom+(window.scrollY||0));
+    }
+    return document.body.scrollHeight;
   }
   function send(){
     pending=false;
