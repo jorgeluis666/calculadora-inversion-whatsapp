@@ -1005,10 +1005,9 @@ document.addEventListener('DOMContentLoaded',init);
 (function(){
   let lastH=0, pending=false;
   function getH(){
-    // Measure the actual content container .layout, NOT the body/html.
+    // Measure the actual content container .layout, NOT the body/html —
     // body has `min-height:100%` which in iFrame context inflates to the
-    // iFrame's own height — creating a feedback loop where any reported
-    // height "validates" itself and the iFrame never shrinks to content.
+    // iFrame's own height and creates a feedback loop.
     const layout=document.querySelector('.layout');
     if(layout){
       const rect=layout.getBoundingClientRect();
@@ -1016,12 +1015,28 @@ document.addEventListener('DOMContentLoaded',init);
     }
     return document.body.scrollHeight;
   }
+  function applyHeight(h){
+    // Same-origin (limaretail.com → limaretail.com) lets us reach the
+    // parent's iFrame element directly. This BYPASSES postMessage entirely
+    // — no parent listener needed, no race with WP Rocket's Delay JS, no
+    // ping loops. Instant, deterministic resize.
+    try{
+      if(window.frameElement){
+        window.frameElement.style.height=h+'px';
+        return true;
+      }
+    }catch(e){/* cross-origin — fall through to postMessage */}
+    return false;
+  }
   function send(){
     pending=false;
     const h=getH();
     if(h>100 && Math.abs(h-lastH)>1){
       lastH=h;
-      window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
+      // Try direct DOM access first; postMessage as cross-origin fallback.
+      if(!applyHeight(h)){
+        window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
+      }
     }
   }
   function schedule(){
@@ -1031,16 +1046,7 @@ document.addEventListener('DOMContentLoaded',init);
   }
   window.addEventListener('load',function(){
     schedule();
-    // Keep FORCE-sending height every 500ms for 15s. Parents behind WP Rocket's
-    // "Delay JS" attach their listener only after user interaction, so the
-    // first send is dropped. We bypass the "only send on diff" check during the
-    // initial window so a late-registering listener still catches a fresh message.
-    const stopAt=Date.now()+15000;
-    (function pingLoop(){
-      const h=getH();
-      if(h>100) window.parent.postMessage({type:'lr-calc-resize',height:h},'*');
-      if(Date.now()<stopAt) setTimeout(pingLoop,500);
-    })();
+    [150,400,900,1800,3500].forEach(t=>setTimeout(schedule,t));
   });
   window.addEventListener('resize',schedule);
   if(window.ResizeObserver){
