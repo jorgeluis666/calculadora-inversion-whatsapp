@@ -471,8 +471,8 @@
         </div>
         <div class="fc-label">Facturación Est.</div>
         <div class="fc-value brand" id="k-revenue">S/4,030</div>
-        <div class="fc-ratio" id="k-roi-badge">ROI ▲ —%</div>
-        <div class="fc-tip"><strong>Facturación &amp; ROI</strong>Ingresos totales por ventas proyectadas (ventas × ticket). El ROI mide la rentabilidad porcentual sobre la inversión inicial.</div>
+        <div class="fc-ratio" id="k-roas-badge">ROAS —x</div>
+        <div class="fc-tip"><strong>Facturación &amp; ROAS</strong>Ingresos totales por ventas proyectadas (ventas × ticket). El ROAS (Return on Ad Spend) es la facturación dividida entre la inversión en ads — muestra cuántos soles ingresan por cada sol invertido.</div>
       </div>
 
     </div><!-- /.funnel-strip -->
@@ -602,7 +602,7 @@
             <div class="cfl-info">
               <div class="cfl-lbl">Facturación Est.</div>
               <div class="cfl-val" id="cfl-rev">—</div>
-              <div class="cfl-sub" id="cfl-roi">ROI —</div>
+              <div class="cfl-sub" id="cfl-roas">ROAS —</div>
             </div>
           </div>
 
@@ -713,7 +713,7 @@ function render(){
   const d = calcRow(inv,days,cpl,rReal,rProsp,rClose,ticket);
   cur={d,inv,days,cpl,rReal,rProsp,rClose,ticket};
 
-  const roi=inv>0?(d.revenue-inv)/inv*100:0;
+  const roas=inv>0?d.revenue/inv:0;
   el('k-inv').textContent              = fS(inv);
   el('k-leads').textContent            = fN(d.leads);
   el('k-leads-ratio').textContent      = `CPL ${fS(cpl,2)}`;
@@ -724,12 +724,12 @@ function render(){
   el('k-sales').textContent            = fN(d.ventas);
   el('k-sales-ratio').textContent      = `${rClose}% de posibles`;
   el('k-revenue').textContent          = fS(d.revenue);
-  const roiEl=el('k-roi-badge');
-  roiEl.textContent=`ROI ${roi>=0?'▲':'▼'} ${Math.abs(roi).toFixed(1)}%`;
-  roiEl.style.color=roi>=0?'var(--brand)':'var(--red)';
+  const roasEl=el('k-roas-badge');
+  roasEl.textContent=`ROAS ${roas.toFixed(1)}x`;
+  roasEl.style.color=roas>=1?'var(--brand)':'var(--red)';
   const ratioVentas = d.leads>0?(d.ventas/d.leads*100):0;
   el('k-ratio').textContent = ratioVentas.toFixed(1)+'%';
-  updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi);
+  updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roas);
   // Redraw chart — sync reference line with sidebar r-prospect
   if(el('chart-slider')){
     const refV=Math.round(rProsp);
@@ -741,14 +741,14 @@ function render(){
 
 function b(txt){return`<strong>${txt}</strong>`}
 
-function updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi){
+function updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roas){
   const leads    = Math.round(d.leads);
   const reales   = Math.round(d.reales);
   const prosp    = Math.round(d.prospects);
   const ventas   = Math.round(d.ventas);
   const revenue  = fS(d.revenue);
-  const roiAbs   = Math.abs(roi).toFixed(0);
-  const roiSign  = roi>=0?'positivo':'negativo';
+  const roasVal  = roas.toFixed(1);
+  const roasSign = roas>=1?'positivo':'negativo';
 
   el('interp-1').innerHTML=
     `Con una inversión de ${b(fS(inv))} y un costo por conversación de ${b(fS(cpl,2))}, `+
@@ -768,7 +768,7 @@ function updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roi){
 
   el('interp-5').innerHTML=
     `Con un ticket promedio de ${b(fS(ticket,2))}, la facturación proyectada es ${b(revenue)}. `+
-    `Eso representa un ROI ${b(roiSign+' del '+roiAbs+'%')} sobre la inversión inicial.`;
+    `Eso representa un ROAS ${b(roasSign+' de '+roasVal+'x')} sobre la inversión en ads.`;
 }
 
 function exportCSV(){
@@ -954,7 +954,7 @@ function drawChart(sliderVal,refVal){
   const sProsp=reales*(sliderVal/100);
   const sV=sProsp*(rClose/100);
   const ratioV=leads>0?(sV/leads*100):0;
-  const roi=inv>0?(sRev-inv)/inv*100:0;
+  const roas=inv>0?sRev/inv:0;
 
   el('cfl-inv').textContent  = fS(inv);
   el('cfl-cpl').textContent  = 'CPL '+fS(cpl,2);
@@ -967,9 +967,9 @@ function drawChart(sliderVal,refVal){
   el('cfl-v-r').textContent  = rClose+'% de posibles';
   el('cfl-ratio').textContent= ratioV.toFixed(1)+'%';
   el('cfl-rev').textContent  = fS(sRev);
-  const roiEl=el('cfl-roi');
-  roiEl.textContent=(roi>=0?'ROI ▲ ':'ROI ▼ ')+Math.abs(roi).toFixed(0)+'%';
-  roiEl.style.color=roi>=0?'var(--brand)':'var(--red)';
+  const roasEl=el('cfl-roas');
+  roasEl.textContent='ROAS '+roas.toFixed(1)+'x';
+  roasEl.style.color=roas>=1?'var(--brand)':'var(--red)';
 }
 
 function initChart(){
