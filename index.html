@@ -508,14 +508,14 @@
 
   <!-- Gráfico interactivo + CTA ManyChat -->
   <div>
-    <div class="sec-lbl">Simulador de eficiencia</div>
+    <div class="sec-lbl">Simulador de cierre</div>
     <div class="chart-block">
 
       <!-- Header -->
       <div class="chart-header">
         <div>
-          <div class="chart-title">Descubre cómo impacta mejorar la Eficiencia en tus respuestas.</div>
-          <div class="chart-sub">A mayor % de conversaciones que se convierten en posibles clientes, mayor es tu facturación. Mueve el slider para explorar escenarios.</div>
+          <div class="chart-title">Descubre cómo impacta mejorar tu ratio de cierre.</div>
+          <div class="chart-sub">A mayor % de posibles clientes que cierran la compra, mayor es tu facturación con la misma inversión en ads. Mueve el slider para explorar escenarios.</div>
         </div>
         <div class="chart-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
@@ -561,24 +561,24 @@
               <div class="cfl-sub" id="cfl-conv-r">—</div>
             </div>
           </div>
-          <div class="cfl-arrow cfl-hi-arrow">↓</div>
+          <div class="cfl-arrow">↓</div>
 
-          <!-- 4 Posibles Clientes — VARIABLE CLAVE -->
-          <div class="cfl-item cfl-hi">
+          <!-- 4 Posibles Clientes -->
+          <div class="cfl-item">
             <div class="cfl-num">4</div>
             <div class="cfl-info">
-              <div class="cfl-lbl">Posibles Clientes <span class="cfl-key">eficiencia</span></div>
+              <div class="cfl-lbl">Posibles Clientes</div>
               <div class="cfl-val" id="cfl-pc">—</div>
               <div class="cfl-sub" id="cfl-pc-r">—% de conv.</div>
             </div>
           </div>
-          <div class="cfl-arrow">↓</div>
+          <div class="cfl-arrow cfl-hi-arrow">↓</div>
 
-          <!-- 5 Ventas Cerradas -->
-          <div class="cfl-item">
+          <!-- 5 Ventas Cerradas — VARIABLE CLAVE -->
+          <div class="cfl-item cfl-hi">
             <div class="cfl-num">5</div>
             <div class="cfl-info">
-              <div class="cfl-lbl">Ventas Cerradas</div>
+              <div class="cfl-lbl">Ventas Cerradas <span class="cfl-key">cierre</span></div>
               <div class="cfl-val" id="cfl-v">—</div>
               <div class="cfl-sub" id="cfl-v-r">—</div>
             </div>
@@ -608,8 +608,8 @@
 
           <!-- Pie: ratio referencial -->
           <div class="chart-ref" style="margin-top:12px">
-            <div class="chart-ref-lbl">Tu ratio actual (panel)</div>
-            <div class="chart-ref-val"><span id="chart-ref-pct">40</span>% Conv → Posibles</div>
+            <div class="chart-ref-lbl">Tu cierre actual (panel)</div>
+            <div class="chart-ref-val"><span id="chart-ref-pct">30</span>% de cierre</div>
             <div class="chart-ref-desc">Línea de referencia en el gráfico.</div>
           </div>
         </div>
@@ -617,9 +617,9 @@
         <!-- DERECHA: gráfico -->
         <div class="chart-right">
           <div class="chart-slider-row">
-            <span class="chart-slider-lbl">Explorar eficiencia:</span>
-            <input id="chart-slider" type="range" min="5" max="95" step="1" value="40" class="chart-range"/>
-            <span class="chart-slider-val"><span id="chart-pct">40</span>%</span>
+            <span class="chart-slider-lbl">Explorar cierre:</span>
+            <input id="chart-slider" type="range" min="5" max="95" step="1" value="30" class="chart-range"/>
+            <span class="chart-slider-val"><span id="chart-pct">30</span>%</span>
           </div>
           <div class="chart-canvas-wrap">
             <canvas id="chart-canvas"></canvas>
@@ -631,9 +631,9 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
             <div class="chart-insight-body">
-              <div class="chart-insight-title">La oportunidad real no está en invertir más</div>
-              <p class="chart-insight-text">La verdadera palanca para aumentar tu facturación está en <strong>qué tan eficiente eres para aprovechar cada conversación que llega</strong>. Como muestra el gráfico, un pequeño aumento en el ratio de conversión genera un impacto desproporcionado en los ingresos — sin necesidad de incrementar tu presupuesto publicitario.</p>
-              <p class="chart-insight-text">Cada conversación sin seguimiento es una venta perdida. Automatizar ese seguimiento inicial con ManyChat convierte más contactos en clientes, multiplicando el retorno de la misma inversión.</p>
+              <div class="chart-insight-title">El cierre multiplica tu facturación sin gastar más en ads</div>
+              <p class="chart-insight-text">Cada punto de mejora en tu <strong>ratio de cierre</strong> se traduce directamente en ingresos adicionales sobre la misma inversión publicitaria — es la palanca con menor costo y mayor retorno del embudo.</p>
+              <p class="chart-insight-text">Cada posible cliente sin seguimiento es una venta perdida. Un follow-up automatizado en los primeros minutos puede subir tu ratio de cierre 2-3x. ManyChat te ayuda a no dejar enfriar las conversaciones que ya están listas para comprar.</p>
             </div>
           </div>
 
@@ -648,8 +648,8 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div>
-            <div class="manychat-title">¿Cómo mejorar este ratio automáticamente?</div>
-            <div class="manychat-desc">Con una automatización de seguimiento en ManyChat, puedes aumentar el % de conversaciones que se convierten en posibles clientes sin esfuerzo manual. Cada punto de mejora en este ratio se traduce directamente en más ventas.</div>
+            <div class="manychat-title">¿Cómo subir tu ratio de cierre automáticamente?</div>
+            <div class="manychat-desc">Con una automatización de seguimiento en ManyChat, puedes mover tu ratio de cierre 2-3x sin esfuerzo manual. Cada punto de mejora se traduce directamente en más ventas sobre la misma inversión en ads.</div>
           </div>
         </div>
         <a class="manychat-btn" href="https://wa.me/51937409733?text=Hola%2C%20vi%20la%20calculadora%20de%20Lima%20Retail%20y%20me%20interesa%20implementar%20ManyChat%20para%20mejorar%20mi%20ratio%20de%20conversión." target="_blank" rel="noopener">
@@ -730,9 +730,9 @@ function render(){
   const ratioVentas = d.leads>0?(d.ventas/d.leads*100):0;
   el('k-ratio').textContent = ratioVentas.toFixed(1)+'%';
   updateInterp(inv,cpl,rReal,rProsp,rClose,ticket,d,roas);
-  // Redraw chart — sync reference line with sidebar r-prospect
+  // Redraw chart — sync reference line with sidebar r-close
   if(el('chart-slider')){
-    const refV=Math.round(rProsp);
+    const refV=Math.round(rClose);
     if(el('chart-ref-pct')) el('chart-ref-pct').textContent=refV;
     drawChart(parseInt(el('chart-slider').value), refV);
   }
@@ -797,10 +797,11 @@ function init(){
 }
 /* ── Gráfico interactivo ─────────────────────────────── */
 function calcRev(pct){
+  // pct = closing ratio being explored. rProsp stays fixed.
   if(!cur) return 0;
-  const{inv,cpl,rReal,rClose,ticket}=cur;
+  const{inv,cpl,rReal,rProsp,ticket}=cur;
   const leads=cpl>0?inv/cpl:0;
-  return leads*(rReal/100)*(pct/100)*(rClose/100)*ticket;
+  return leads*(rReal/100)*(rProsp/100)*(pct/100)*ticket;
 }
 
 function rrect(ctx,x,y,w,h,r){
@@ -815,7 +816,7 @@ function rrect(ctx,x,y,w,h,r){
 
 function drawChart(sliderVal,refVal){
   if(!cur) return;
-  if(refVal===undefined) refVal=parseFloat(el('r-prospect').value)||40;
+  if(refVal===undefined) refVal=parseFloat(el('r-close').value)||30;
   sliderVal=Math.max(5,Math.min(95,sliderVal));
   refVal   =Math.max(5,Math.min(95,refVal));
 
@@ -879,13 +880,13 @@ function drawChart(sliderVal,refVal){
   const ryLabel='S/'+fN(rRev);
   ctx.font='bold 11px system-ui';ctx.textAlign='right';ctx.fillStyle='#64748B';
   ctx.fillText(ryLabel,pad.l-6,ry+4);
-  // Etiqueta superior "Tu ratio actual"
-  const tw=ctx.measureText('Tu ratio actual: '+refVal+'%').width+14;
+  // Etiqueta superior "Tu cierre actual"
+  const tw=ctx.measureText('Tu cierre actual: '+refVal+'%').width+14;
   const tlx=Math.min(Math.max(rx-tw/2,2),W-tw-2);
   ctx.fillStyle='#F1F5F9';
   rrect(ctx,tlx,pad.t-1,tw,18,4);ctx.fill();
   ctx.fillStyle='#475569';ctx.font='bold 10px system-ui';ctx.textAlign='center';
-  ctx.fillText('Tu ratio actual: '+refVal+'%',tlx+tw/2,pad.t+12);
+  ctx.fillText('Tu cierre actual: '+refVal+'%',tlx+tw/2,pad.t+12);
   // Punto gris
   ctx.beginPath();ctx.arc(rx,ry,5,0,Math.PI*2);ctx.fillStyle='#94A3B8';ctx.fill();
   ctx.beginPath();ctx.arc(rx,ry,3,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
@@ -945,14 +946,15 @@ function drawChart(sliderVal,refVal){
     }
   });
   ctx.fillStyle='#64748B';ctx.font='11px system-ui';ctx.textAlign='center';
-  ctx.fillText('% Conv. → Posibles Clientes',W/2,H-4);
+  ctx.fillText('% Ratio de cierre',W/2,H-4);
 
-  /* ── Actualizar embudo izquierdo ── */
-  const{inv,cpl,rReal,rClose,ticket}=cur;
+  /* ── Actualizar embudo izquierdo ──
+     El slider ahora explora el ratio de cierre. rProsp queda fijo. */
+  const{inv,cpl,rReal,rProsp,ticket}=cur;
   const leads=cpl>0?inv/cpl:0;
   const reales=leads*(rReal/100);
-  const sProsp=reales*(sliderVal/100);
-  const sV=sProsp*(rClose/100);
+  const sProsp=reales*(rProsp/100);
+  const sV=sProsp*(sliderVal/100);
   const ratioV=leads>0?(sV/leads*100):0;
   const roas=inv>0?sRev/inv:0;
 
@@ -962,9 +964,9 @@ function drawChart(sliderVal,refVal){
   el('cfl-conv').textContent = fN(reales);
   el('cfl-conv-r').textContent = rReal+'% de leads';
   el('cfl-pc').textContent   = fN(sProsp);
-  el('cfl-pc-r').textContent = sliderVal+'% de conv.';
+  el('cfl-pc-r').textContent = rProsp+'% de conv.';
   el('cfl-v').textContent    = fN(sV);
-  el('cfl-v-r').textContent  = rClose+'% de posibles';
+  el('cfl-v-r').textContent  = sliderVal+'% de posibles';
   el('cfl-ratio').textContent= ratioV.toFixed(1)+'%';
   el('cfl-rev').textContent  = fS(sRev);
   const roasEl=el('cfl-roas');
@@ -988,9 +990,9 @@ function initChart(){
   } else {
     window.addEventListener('resize',()=>drawChart(parseInt(slider.value)));
   }
-  // Sync ref label when sidebar r-prospect changes
-  el('r-prospect').addEventListener('input',()=>{
-    const v=parseFloat(el('r-prospect').value)||40;
+  // Sync ref label when sidebar r-close changes
+  el('r-close').addEventListener('input',()=>{
+    const v=parseFloat(el('r-close').value)||30;
     refLbl.textContent=Math.round(v);
     slider.value=Math.round(v);
     pctLbl.textContent=Math.round(v);
